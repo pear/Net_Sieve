@@ -109,8 +109,9 @@ class Net_Sieve
     * @param  string $host      Hostname of server
     * @param  string $port      Port of server
     * @param  string $logintype Type of login to perform
+    * @param  string $euser     Effective User (if $user=admin, login as $euser)
     */
-    function Net_Sieve($user, $pass, $host = 'localhost', $port = 2000, $logintype = 'PLAIN')
+    function Net_Sieve($user, $pass, $host = 'localhost', $port = 2000, $logintype = 'PLAIN', $euser = '')
     {
         $this->_state = NET_SIEVE_STATE_DISCONNECTED;
 
@@ -118,6 +119,7 @@ class Net_Sieve
         $this->_data['pass'] = $pass;
         $this->_data['host'] = $host;
         $this->_data['port'] = $port;
+        $this->_data['euser'] = $euser;
         $this->_sock = &new Net_Socket();
 
         if (PEAR::isError($res = $this->_connect($host, $port))) {
@@ -125,7 +127,7 @@ class Net_Sieve
             return;
         }
 
-        if (PEAR::isError($res = $this->_login($user, $pass, $logintype))) {
+        if (PEAR::isError($res = $this->_login($user, $pass, $logintype, $euser))) {
             $this->_error = $res;
         }
     }
@@ -269,15 +271,19 @@ class Net_Sieve
     * @param  string $user      Login username
     * @param  string $pass      Login password
     * @param  string $logintype Type of login method to use
+    * @param  string $euser     Effective UID (perform on behalf of $euser)
     * @return mixed             True on success, PEAR_Error otherwise
     */
-    function _login($user, $pass, $logintype = 'PLAIN')
+    function _login($user, $pass, $logintype = 'PLAIN', $euser = '')
     {
         if (NET_SIEVE_STATE_AUTHORISATION == $this->_state) {
 
             if ($logintype == 'PLAIN' AND in_array('PLAIN', $this->_capability['sasl'])) {
-                $this->_sendCmd(sprintf('AUTHENTICATE "PLAIN" "%s"', base64_encode(chr(0) . $user . chr(0) . $pass)));
-
+                if ($euser != '') {
+                    $this->_sendCmd(sprintf('AUTHENTICATE "PLAIN" "%s"', base64_encode($euser . chr(0) . $user . chr(0) . $pass)));
+                } else {
+                    $this->_sendCmd(sprintf('AUTHENTICATE "PLAIN" "%s"', base64_encode(chr(0) . $user . chr(0) . $pass)));
+                }
             } elseif ($logintype == 'PLAIN' AND in_array('LOGIN', $this->_capability['sasl'])) {
                 $this->_sendCmd('AUTHENTICATE "LOGIN"');
                 $this->_sendCmd(sprintf('"%s"', base64_encode($user)));
