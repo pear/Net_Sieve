@@ -5,7 +5,6 @@
 <package>
 
   <name>Net_Sieve</name>
-  <license>BSD</license>
   <summary>Handles talking to timsieved</summary>
   <description>
     Provides an API to talk to the timsieved server that comes
@@ -23,9 +22,9 @@
   </maintainers>
 
   <release>
-    <license>PHP</license>
-    <version>0.8</version>
-    <date>2002-05-10</date>
+    <license>BSD</license>
+    <version>0.8.1</version>
+    <date>2002-07-27</date>
     <state>stable</state>
     <notes>
 	 Initial release
@@ -35,6 +34,23 @@
         <file role="php" name="Sieve.php"/>
       </dir>
     </filelist>
+	<deps>
+      <dep type="pkg" rel="ge" version="1.0">Net_Socket</dep>
+	</deps>
   </release>
+
+  <changelog>
+
+    <release>
+      <license>PHP</license>
+      <version>0.8</version>
+      <date>2002-05-10</date>
+      <state>stable</state>
+      <notes>
+  	    Initial release
+      </notes>
+    </release>
+
+  </changelog>
 
 </package>
