@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE package SYSTEM "../package.dtd">
+<!-- do not use the "Type" attribute here, that one is only for
+     generated package.xml files -->
+<package>
+
+  <name>Net_Sieve</name>
+  <summary>Handles talking to timsieved</summary>
+  <description>
+    Provides an API to talk to the timsieved server that comes
+	with Cyrus IMAPd. Can be used to install, remove, mark active etc
+	sieve scripts.
+  </description>
+
+  <maintainers>
+    <maintainer>
+      <user>richard</user>
+      <name>Richard Heyes</name>
+      <email>richard@php.net</email>
+      <role>lead</role>
+    </maintainer>
+  </maintainers>
+
+  <release>
+    <license>PHP</license>
+    <version>0.8</version>
+    <date>2002-05-10</date>
+    <state>stable</state>
+    <notes>
+	 Initial release
+    </notes>
+    <filelist>
+      <dir name="/" baseinstalldir="Net">
+        <file role="php" name="Sieve.php"/>
+      </dir>
+    </filelist>
+  </release>
+
+</package>
