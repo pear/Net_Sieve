@@ -5,6 +5,7 @@
 <package>
 
   <name>Net_Sieve</name>
+  <license>BSD</license>
   <summary>Handles talking to timsieved</summary>
   <description>
     Provides an API to talk to the timsieved server that comes
