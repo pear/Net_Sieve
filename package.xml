@@ -24,6 +24,12 @@
       <email>damlists@cnba.uba.ar</email>
       <role>lead</role>
     </maintainer>
+    <maintainer>
+	<user>amistry</user>
+	<name>Anish Mistry</name>
+	<email>amistry@am-productions.biz</email>
+	<role>lead</role>
+    </maintainer>
   </maintainers>
   
   <release>

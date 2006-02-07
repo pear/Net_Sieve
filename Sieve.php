@@ -1,6 +1,7 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | Copyright (c) 2002-2003, Richard Heyes                                     |
+// | Copyright (c) 2002-2003, Richard Heyes                                |
+// | Copyright (c) 2006, Anish Mistry                                      |
 // | All rights reserved.                                                  |
 // |                                                                       |
 // | Redistribution and use in source and binary forms, with or without    |
@@ -31,6 +32,7 @@
 // +-----------------------------------------------------------------------+
 // | Author: Richard Heyes <richard@phpguru.org>                           |
 // | Co-Author: Damian Fernandez Sosa <damlists@cnba.uba.ar>               |
+// | Co-Author: Anish Mistry <amistry@am-productions.biz>                  |
 // +-----------------------------------------------------------------------+
 
 require_once('Net/Socket.php');
@@ -63,11 +65,13 @@ define('NET_SIEVE_STATE_TRANSACTION',   3, true);
 * A class for talking to the timsieved server which
 * comes with Cyrus IMAP. the HAVESPACE
 * command which appears to be broken (Cyrus 2.0.16).
+* SIEVE: RFC3028 http://www.ietf.org/rfc/rfc3028.txt
 *
 * @author  Richard Heyes <richard@php.net>
 * @author  Damian Fernandez Sosa <damlists@cnba.uba.ar>
+* @author  Anish Mistry <amistry@am-productions.biz>
 * @access  public
-* @version 0.9.1
+* @version 1.2.0
 * @package Net_Sieve
 */
 
@@ -103,6 +107,11 @@ class Net_Sieve
     * @var boolean
     */
     var $_debug = false;
+    /**
+    * Allows picking up of an already established connection
+    * @var boolean
+    */
+    var $_bypassAuth = false;
 
 
     /**
@@ -111,7 +120,7 @@ class Net_Sieve
     */
 
     var $supportedAuthMethods=array('DIGEST-MD5', 'CRAM-MD5', 'PLAIN' , 'LOGIN');
-    //if you have problems using DIGEST-MD5 authentication  please commente the line above and discomment the following line
+    //if you have problems using DIGEST-MD5 authentication  please comment the line above and uncomment the following line
     //var $supportedAuthMethods=array( 'CRAM-MD5', 'PLAIN' , 'LOGIN');
 
     //var $supportedAuthMethods=array( 'PLAIN' , 'LOGIN');
@@ -144,8 +153,10 @@ class Net_Sieve
     * @param  string $port      Port of server
     * @param  string $logintype Type of login to perform
     * @param  string $euser     Effective User (if $user=admin, login as $euser)
+    * @param  string $bypassAuth Skip the authentication phase.  Useful if the socket
+                                  is already open.
     */
-    function Net_Sieve($user = null , $pass  = null , $host = 'localhost', $port = 2000, $logintype = '', $euser = '', $debug = false)
+    function Net_Sieve($user = null , $pass  = null , $host = 'localhost', $port = 2000, $logintype = '', $euser = '', $debug = false, $bypassAuth = false)
     {
         $this->_state = NET_SIEVE_STATE_DISCONNECTED;
         $this->_data['user'] = $user;
@@ -155,7 +166,8 @@ class Net_Sieve
         $this->_data['logintype'] = $logintype;
         $this->_data['euser'] = $euser;
         $this->_sock = &new Net_Socket();
-        $this->_debug  = $debug;
+        $this->_debug = $debug;
+        $this->_bypassAuth = $bypassAuth;
         /*
         * Include the Auth_SASL package.  If the package is not available,
         * we disable the authentication methods that depend upon it.
@@ -189,8 +201,8 @@ class Net_Sieve
 
     function _raiseError($msg, $code)
     {
-    include_once 'PEAR.php';
-    return PEAR::raiseError($msg, $code);
+        include_once 'PEAR.php';
+        return PEAR::raiseError($msg, $code);
     }
 
 
@@ -204,12 +216,15 @@ class Net_Sieve
     * @access private
     * @return mixed Indexed array of scriptnames or PEAR_Error on failure
     */
-    function _handleConnectAndLogin(){
-        if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'] ))) {
-            return $res;
-        }
-        if (PEAR::isError($res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'] , $this->_data['euser'] ) ) ) {
-            return $res;
+    function _handleConnectAndLogin()
+    {
+        if($this->_bypassAuth === false) {
+            if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'] ))) {
+                return $res;
+            }
+            if (PEAR::isError($res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'] , $this->_data['euser'] , $this->_bypassAuth) ) ) {
+                return $res;
+            }
         }
         return true;
 
@@ -329,9 +344,10 @@ class Net_Sieve
     * @access private
     * @param  string $host Hostname of server
     * @param  string $port Port of server
+    * @param  array  $options List of options to pass to connect
     * @return mixed        True on success, PEAR_Error otherwise
     */
-    function connect($host, $port)
+    function connect($host, $port, $options = null)
     {
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
             $msg='Not currently in DISCONNECTED state';
@@ -339,24 +355,37 @@ class Net_Sieve
             return $this->_raiseError($msg,$code);
         }
 
-        if (PEAR::isError($res = $this->_sock->connect($host, $port, null, 5))) {
+        if (PEAR::isError($res = $this->_sock->connect($host, $port, false, 5, $options))) {
             return $res;
         }
 
-
-        $this->_state = NET_SIEVE_STATE_AUTHORISATION;
-        if (PEAR::isError($res = $this->_doCmd())) {
-            return $res;
+        if($this->_bypassAuth === false) {
+            $this->_state = NET_SIEVE_STATE_AUTHORISATION;
+            if (PEAR::isError($res = $this->_doCmd())) {
+                return $res;
+            }
+        } else {
+            $this->_state = NET_SIEVE_STATE_TRANSACTION;
         }
-        /*
+
+
+        // Explicitly ask for the capabilities in case the connection
+        // is picked up from an existing connection.
         if(PEAR::isError($res = $this->_cmdCapability() )) {
             $msg='Failed to connect, server said: ' . $res->getMessage();
             $code=2;
             return $this->_raiseError($msg,$code);
         }
-*/
+
         // Get logon greeting/capability and parse
         $this->_parseCapability($res);
+
+        // check if we can enable TLS via STARTTLS
+        if($this->_capability['starttls'] == true && function_exists('stream_socket_enable_crypto') == true) {
+            if (PEAR::isError($res = $this->_startTLS())) {
+                return $res;
+            }
+        }
 
         return true;
     }
@@ -369,10 +398,10 @@ class Net_Sieve
     * @param  string  $pass          Login password
     * @param  string  $logintype     Type of login method to use
     * @param  string  $euser         Effective UID (perform on behalf of $euser)
-    * @param  boolean $bypassAuth    dont perform auth 
+    * @param  boolean $bypassAuth    Do not perform authentication
     * @return mixed                  True on success, PEAR_Error otherwise
     */
-    function login($user, $pass, $logintype = null , $euser = '', $bypassAuth=false)
+    function login($user, $pass, $logintype = null , $euser = '', $bypassAuth = false)
     {
         if (NET_SIEVE_STATE_AUTHORISATION != $this->_state) {
             $msg='Not currently in AUTHORISATION state';
@@ -381,7 +410,7 @@ class Net_Sieve
         }
 
 
-        
+
         if( $bypassAuth === false ){
             if(PEAR::isError($res=$this->_cmdAuthenticate($user , $pass , $logintype, $euser ) ) ){
                 return $res;
@@ -548,8 +577,8 @@ class Net_Sieve
         }
         $challenge = base64_decode( $challenge );
         $digest = &Auth_SASL::factory('digestmd5');
-        
-        
+
+
         if(PEAR::isError($param=$digest->getResponse($uid, $pwd, $challenge, "localhost", "sieve" , $euser) )) {
             return $param;
         }
@@ -570,7 +599,7 @@ class Net_Sieve
         if( strtoupper(substr($challenge,0,2))== 'OK' ){
                 return true;
         }
-        
+
 
         /*
         * We don't use the protocol's third step because SIEVE doesn't allow
@@ -759,7 +788,7 @@ class Net_Sieve
             $code=1;
             return $this->_raiseError($msg,$code);
         }
-        
+
         if (PEAR::isError($res = $this->_doCmd('CAPABILITY'))) {
             return $res;
         }
@@ -806,7 +835,7 @@ class Net_Sieve
         $data = preg_split('/\r?\n/', $data, -1, PREG_SPLIT_NO_EMPTY);
 
         for ($i = 0; $i < count($data); $i++) {
-            if (preg_match('/^"([a-z]+)" ("(.*)")?$/i', $data[$i], $matches)) {
+            if (preg_match('/^"([a-z]+)"( "(.*)")?$/i', $data[$i], $matches)) {
                 switch (strtolower($matches[1])) {
                     case 'implementation':
                         $this->_capability['implementation'] = $matches[3];
@@ -822,6 +851,7 @@ class Net_Sieve
 
                     case 'starttls':
                         $this->_capability['starttls'] = true;
+            break;
                 }
             }
         }
@@ -933,25 +963,22 @@ class Net_Sieve
                         $msg=trim($response . substr($line, 2));
                         $code=3;
                         return $this->_raiseError($msg,$code);
-                        //return PEAR::raiseError(trim($response . substr($line, 2)));
                     } elseif ('bye' === strtolower(substr($line, 0, 3))) {
 
                         if(PEAR::isError($error = $this->disconnect(false) ) ){
                             $msg="Can't handle bye, The error was= " . $error->getMessage() ;
                             $code=4;
                             return $this->_raiseError($msg,$code);
-                            //return PEAR::raiseError("Can't handle bye, The error was= " . $error->getMessage() );
                         }
                         //if (preg_match('/^bye \(referral "([^"]+)/i', $line, $matches)) {
                         if (preg_match('/^bye \(referral "(sieve:\/\/)?([^"]+)/i', $line, $matches)) {
                             // Check for referral, then follow it.  Otherwise, carp an error.
-                            //$this->_data['host'] = $matches[1];
-                            $this->_data['host'] = $matches[2];
-                            if (PEAR::isError($error = $this->_handleConnectAndLogin() ) ){
+                            // Replace the old host with the referral host preserving any protocol prefix
+                            $this->_data['host'] = preg_replace('/\w+(?!(\w|\:\/\/)).*/',$matches[2],$this->_data['host']);
+                           if (PEAR::isError($error = $this->_handleConnectAndLogin() ) ){
                                 $msg="Can't follow referral to " . $this->_data['host'] . ", The error was= " . $error->getMessage() ;
                                 $code=5;
                                 return $this->_raiseError($msg,$code);
-                                //return PEAR::raiseError("Can't follow referral to " . $this->_data['host'] . ", The error was= " . $error->getMessage() );
                             }
                             break;
                             // Retry the command
@@ -963,7 +990,6 @@ class Net_Sieve
                         $msg=trim($response . $line);
                         $code=6;
                         return $this->_raiseError($msg,$code);
-                        //return PEAR::raiseError(trim($response . $line));
                     } elseif (preg_match('/^{([0-9]+)\+?}/i', $line, $matches)) {
                         // Matches String Responses.
                         //$line = str_replace("\r\n", ' ', $this->_sock->read($matches[1] + 2 ));
@@ -980,7 +1006,6 @@ class Net_Sieve
         $msg="Max referral count reached ($referralCount times) Cyrus murder loop error?";
         $code=7;
         return $this->_raiseError($msg,$code);
-        //return PEAR::raiseError("Max referral count reached ($referralCount times) Cyrus murder loop error?" );
     }
 
 
@@ -992,9 +1017,9 @@ class Net_Sieve
     * @access public
     * @return void
     */
-    function setDebug($debug=true)
+    function setDebug($debug = true)
     {
-        $this->_debug=$debug;
+        $this->_debug = $debug;
     }
 
     /**
@@ -1071,7 +1096,6 @@ class Net_Sieve
             $msg='Not currently connected';
             $code=7;
             return $this->_raiseError($msg,$code);
-            //return PEAR::raiseError('Not currently connected');
         }
 
         return $this->_capability['extensions'];
@@ -1094,7 +1118,6 @@ class Net_Sieve
             $msg='Not currently connected';
             $code=7;
             return $this->_raiseError($msg,$code);
-            //return PEAR::raiseError('Not currently connected');
         }
 
         if(is_array($this->_capability['extensions'] ) ){
@@ -1120,7 +1143,6 @@ class Net_Sieve
             $msg='Not currently connected';
             $code=7;
             return $this->_raiseError($msg,$code);
-            //return PEAR::raiseError('Not currently connected');
         }
         if(!isset($this->_capability['sasl']) ){
             $this->_capability['sasl']=array();
@@ -1133,7 +1155,7 @@ class Net_Sieve
 
 
     /**
-    * Return true if tyhe server has that extension
+    * Return true if the server has that extension
     *
     * @access public
     * @param string  the extension to compare
@@ -1157,9 +1179,36 @@ class Net_Sieve
         return false;
     }
 
+    /**
+    * Return true if the TLS negotiation was successful
+    *
+    * @access public
+    * @return mixed              true on success, PEAR_Error on failure
+    */
+    function _startTLS()
+    {
+        if (PEAR::isError($res = $this->_doCmd("STARTTLS"))) {
+            return $res;
+        }
 
+        if(stream_socket_enable_crypto($this->_sock->fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT) == false) {
+            $msg='Failed to establish TLS connection';
+            $code=2;
+            return $this->_raiseError($msg,$code);
+        }
 
+        if($this->_debug === true) {
+            echo "STARTTLS Negotiation Successful\n";
+        }
 
+        // RFC says we need to query the server capabilities again
+        if(PEAR::isError($res = $this->_cmdCapability() )) {
+            $msg='Failed to connect, server said: ' . $res->getMessage();
+            $code=2;
+            return $this->_raiseError($msg,$code);
+        }
+        return true;
+    }
 
 }
 ?>
