@@ -381,7 +381,7 @@ class Net_Sieve
         $this->_parseCapability($res);
 
         // check if we can enable TLS via STARTTLS
-        if($this->_capability['starttls'] == true && function_exists('stream_socket_enable_crypto') == true) {
+        if(isset($this->_capability['starttls']) && function_exists('stream_socket_enable_crypto') === true) {
             if (PEAR::isError($res = $this->_startTLS())) {
                 return $res;
             }
@@ -851,7 +851,7 @@ class Net_Sieve
 
                     case 'starttls':
                         $this->_capability['starttls'] = true;
-            break;
+                        break;
                 }
             }
         }
