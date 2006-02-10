@@ -1182,7 +1182,7 @@ class Net_Sieve
     /**
     * Return true if the TLS negotiation was successful
     *
-    * @access public
+    * @access private
     * @return mixed              true on success, PEAR_Error on failure
     */
     function _startTLS()
