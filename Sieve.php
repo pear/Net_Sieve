@@ -218,11 +218,11 @@ class Net_Sieve
     */
     function _handleConnectAndLogin()
     {
+        if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'] ))) {
+            return $res;
+        }
         if($this->_bypassAuth === false) {
-            if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'] ))) {
-                return $res;
-            }
-            if (PEAR::isError($res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'] , $this->_data['euser'] , $this->_bypassAuth) ) ) {
+           if (PEAR::isError($res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'] , $this->_data['euser'] , $this->_bypassAuth) ) ) {
                 return $res;
             }
         }
