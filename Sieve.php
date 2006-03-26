@@ -993,7 +993,13 @@ class Net_Sieve
                     } elseif (preg_match('/^{([0-9]+)\+?}/i', $line, $matches)) {
                         // Matches String Responses.
                         //$line = str_replace("\r\n", ' ', $this->_sock->read($matches[1] + 2 ));
-                        $line = $this->_sock->read($matches[1] + 2 );
+                        $str_size = $matches[1] + 2;
+                        $line = '';
+                        $line_length = 0;
+                        while ($line_length < $str_size) {
+                            $line .= $this->_sock->read($str_size - $line_length);
+                            $line_length = strlen($line);
+                        }
                         if($this->_debug){
                             echo "S:$line\n";
                         }
