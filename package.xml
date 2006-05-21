@@ -28,27 +28,27 @@ sieve scripts.
   <email>amistry@am-productions.biz</email>
   <active>yes</active>
  </lead>
- <date>2006-02-09</date>
- <time>19:32:45</time>
+ <date>2006-04-01</date>
+ <time>15:32:45</time>
  <version>
-  <release>1.1.2</release>
-  <api>1.1.2</api>
+  <release>1.1.3</release>
+  <api>1.1.3</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Fixed Request #4053 Added STARTTLS support for PHP 5.1 and above
-* Fixed Bug #3519 Net_Sieve w/ externally established sockets
-* Fixed Bug #4794 drops protocol prefix, e.g. &quot;ssl://&quot; in referrals
-* Fixed STARTTLS detection
-* Allow $options[] to be passed to Net_Socket
+ <notes>
+* Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
+* Fixed Bug #7197 getScript() truncates long scripts
+* Added PHPUnit2 regression test script
  </notes>
  <contents>
   <dir name="/">
    <file baseinstalldir="Net" name="Sieve.php" role="php" />
-   <file baseinstalldir="Net" name="test_sieve.php" role="test" />
+   <file baseinstalldir="Net" name="SieveTest.php" role="test" />
+   <file baseinstalldir="Net" name="largescript.siv" role="test" />
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -68,6 +68,23 @@ sieve scripts.
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+      <version>
+          <release>1.1.2</release>
+          <api>1.1.2</api>
+      </version>
+      <stability>
+          <release>stable</release>
+          <api>stable</api>
+      </stability>
+      <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+      <notes>* Fixed Request #4053 Added STARTTLS support for PHP 5.1 and above
+          * Fixed Bug #3519 Net_Sieve w/ externally established sockets
+          * Fixed Bug #4794 drops protocol prefix, e.g. &quot;ssl://&quot; in referrals
+          * Fixed STARTTLS detection
+          * Allow $options[] to be passed to Net_Socket
+      </notes>
+  </release>
   <release>
    <version>
     <release>1.1.1</release>
