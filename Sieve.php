@@ -63,9 +63,10 @@ define('NET_SIEVE_STATE_TRANSACTION',   3, true);
 
 /**
 * A class for talking to the timsieved server which
-* comes with Cyrus IMAP. the HAVESPACE
-* command which appears to be broken (Cyrus 2.0.16).
+* comes with Cyrus IMAP.
+*
 * SIEVE: RFC3028 http://www.ietf.org/rfc/rfc3028.txt
+* MANAGE-SIEVE: http://www.ietf.org/internet-drafts/draft-martin-managesieve-06.txt
 *
 * @author  Richard Heyes <richard@php.net>
 * @author  Damian Fernandez Sosa <damlists@cnba.uba.ar>
@@ -101,44 +102,39 @@ class Net_Sieve
     */
     var $_error;
 
-
     /**
     * To allow class debuging
     * @var boolean
     */
     var $_debug = false;
+
     /**
     * Allows picking up of an already established connection
     * @var boolean
     */
     var $_bypassAuth = false;
+
     /**
     * Whether to use TLS if available
     * @var boolean
     */
     var $_useTLS = true;
 
-
-
     /**
     * The auth methods this class support
     * @var array
     */
-
     var $supportedAuthMethods=array('DIGEST-MD5', 'CRAM-MD5', 'PLAIN' , 'LOGIN');
     //if you have problems using DIGEST-MD5 authentication  please comment the line above and uncomment the following line
     //var $supportedAuthMethods=array( 'CRAM-MD5', 'PLAIN' , 'LOGIN');
 
     //var $supportedAuthMethods=array( 'PLAIN' , 'LOGIN');
 
-
     /**
     * The auth methods this class support
     * @var array
     */
     var $supportedSASLAuthMethods=array('DIGEST-MD5', 'CRAM-MD5');
-
-
 
     /**
     * Handles posible referral loops
@@ -152,7 +148,6 @@ class Net_Sieve
     * any generated error in $this->_error, which can be retrieved
     * using the getError() method.
     *
-    * @access public
     * @param  string $user      Login username
     * @param  string $pass      Login password
     * @param  string $host      Hostname of server
@@ -197,25 +192,20 @@ class Net_Sieve
         }
     }
 
-
-
     /**
     * Handles the errors the class can find
     * on the server
     *
     * @access private
+    * @param mixed $msg  Text error message or PEAR error object
+    * @param integer $code  Numeric error code
     * @return PEAR_Error
     */
-
     function _raiseError($msg, $code)
     {
         include_once 'PEAR.php';
         return PEAR::raiseError($msg, $code);
     }
-
-
-
-
 
     /**
     * Handles connect and login.
@@ -235,17 +225,12 @@ class Net_Sieve
             }
         }
         return true;
-
     }
-
-
-
 
     /**
     * Returns an indexed array of scripts currently
     * on the server
     *
-    * @access public
     * @return mixed Indexed array of scriptnames or PEAR_Error on failure
     */
     function listScripts()
@@ -261,7 +246,6 @@ class Net_Sieve
     /**
     * Returns the active script
     *
-    * @access public
     * @return mixed The active scriptname or PEAR_Error on failure
     */
     function getActive()
@@ -278,7 +262,6 @@ class Net_Sieve
     /**
     * Sets the active script
     *
-    * @access public
     * @param  string $scriptname The name of the script to be set as active
     * @return mixed              true on success, PEAR_Error on failure
     */
@@ -290,7 +273,6 @@ class Net_Sieve
     /**
     * Retrieves a script
     *
-    * @access public
     * @param  string $scriptname The name of the script to be retrieved
     * @return mixed              The script on success, PEAR_Error on failure
     */
@@ -302,10 +284,9 @@ class Net_Sieve
     /**
     * Adds a script to the server
     *
-    * @access public
     * @param  string $scriptname Name of the script
     * @param  string $script     The script
-    * @param  bool   $makeactive Whether to make this the active script
+    * @param  boolean $makeactive Whether to make this the active script
     * @return mixed              true on success, PEAR_Error on failure
     */
     function installScript($scriptname, $script, $makeactive = false)
@@ -324,7 +305,6 @@ class Net_Sieve
     /**
     * Removes a script from the server
     *
-    * @access public
     * @param  string $scriptname Name of the script
     * @return mixed              True on success, PEAR_Error on failure
     */
@@ -337,7 +317,6 @@ class Net_Sieve
     * Returns any error that may have been generated in the
     * constructor
     *
-    * @access public
     * @return mixed False if no error, PEAR_Error otherwise
     */
     function getError()
@@ -377,7 +356,6 @@ class Net_Sieve
             $this->_state = NET_SIEVE_STATE_TRANSACTION;
         }
 
-
         // Explicitly ask for the capabilities in case the connection
         // is picked up from an existing connection.
         if(PEAR::isError($res = $this->_cmdCapability() )) {
@@ -404,7 +382,6 @@ class Net_Sieve
     /**
     * Logs into server.
     *
-    * @access public
     * @param  string  $user          Login username
     * @param  string  $pass          Login password
     * @param  string  $logintype     Type of login method to use
@@ -420,8 +397,6 @@ class Net_Sieve
             return $this->_raiseError($msg,$code);
         }
 
-
-
         if( $bypassAuth === false ){
             if(PEAR::isError($res=$this->_cmdAuthenticate($user , $pass , $logintype, $euser ) ) ){
                 return $res;
@@ -431,14 +406,13 @@ class Net_Sieve
         return true;
     }
 
-
-
-     /* Handles the authentication using any known method
+    /**
+     * Handles the authentication using any known method
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The method to use ( if $usermethod == '' then the class chooses the best method (the stronger is the best ) )
-     * @param string The effective uid to authenticate as.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $userMethod The method to use ( if $userMethod == '' then the class chooses the best method (the stronger is the best ) )
+     * @param string $euser The effective uid to authenticate as.
      *
      * @return mixed  string or PEAR_Error
      *
@@ -447,8 +421,6 @@ class Net_Sieve
      */
     function _cmdAuthenticate($uid , $pwd , $userMethod = null , $euser = '' )
     {
-
-
         if ( PEAR::isError( $method = $this->_getBestAuthMethod($userMethod) ) ) {
             return $method;
         }
@@ -471,26 +443,18 @@ class Net_Sieve
                 break;
         }
 
-
         if (PEAR::isError($res = $this->_doCmd() )) {
             return $res;
         }
         return $result;
     }
 
-
-
-
-
-
-
-
-
-     /* Authenticates the user using the PLAIN method.
+    /**
+     * Authenticates the user using the PLAIN method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The effective uid to authenticate as.
+     * @param string $user The userid to authenticate as.
+     * @param string $pass The password to authenticate with.
+     * @param string $euser The effective uid to authenticate as.
      *
      * @return array Returns an array containing the response
      *
@@ -499,23 +463,20 @@ class Net_Sieve
      */
     function _authPLAIN($user, $pass , $euser )
     {
-
         if ($euser != '') {
             $cmd=sprintf('AUTHENTICATE "PLAIN" "%s"', base64_encode($euser . chr(0) . $user . chr(0) . $pass ) ) ;
         } else {
             $cmd=sprintf('AUTHENTICATE "PLAIN" "%s"', base64_encode( chr(0) . $user . chr(0) . $pass ) );
         }
         return  $this->_sendCmd( $cmd ) ;
-
     }
 
-
-
-     /* Authenticates the user using the PLAIN method.
+    /**
+     * Authenticates the user using the PLAIN method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The effective uid to authenticate as.
+     * @param string $user The userid to authenticate as.
+     * @param string $pass The password to authenticate with.
+     * @param string $euser The effective uid to authenticate as.
      *
      * @return array Returns an array containing the response
      *
@@ -527,17 +488,14 @@ class Net_Sieve
         $this->_sendCmd('AUTHENTICATE "LOGIN"');
         $this->_doCmd(sprintf('"%s"', base64_encode($user)));
         $this->_doCmd(sprintf('"%s"', base64_encode($pass)));
-
     }
 
-
-
-
-     /* Authenticates the user using the CRAM-MD5 method.
+    /**
+     * Authenticates the user using the CRAM-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The cmdID.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $euser The effective uid to authenticate as.
      *
      * @return array Returns an array containing the response
      *
@@ -546,7 +504,6 @@ class Net_Sieve
      */
     function _authCRAM_MD5($uid, $pwd, $euser)
     {
-
         if ( PEAR::isError( $challenge = $this->_doCmd( 'AUTHENTICATE "CRAM-MD5"' ) ) ) {
             $this->_error=challenge ;
             return challenge ;
@@ -566,13 +523,12 @@ class Net_Sieve
 
     }
 
-
-
-     /* Authenticates the user using the DIGEST-MD5 method.
+    /**
+     * Authenticates the user using the DIGEST-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The efective user
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $euser The effective uid to authenticate as.
      *
      * @return array Returns an array containing the response
      *
@@ -581,14 +537,12 @@ class Net_Sieve
      */
     function _authDigest_MD5($uid, $pwd, $euser)
     {
-
         if ( PEAR::isError( $challenge = $this->_doCmd('AUTHENTICATE "DIGEST-MD5"') ) ) {
             $this->_error=challenge ;
             return challenge ;
         }
         $challenge = base64_decode( $challenge );
         $digest = &Auth_SASL::factory('digestmd5');
-
 
         if(PEAR::isError($param=$digest->getResponse($uid, $pwd, $challenge, "localhost", "sieve" , $euser) )) {
             return $param;
@@ -600,8 +554,6 @@ class Net_Sieve
             return $error;
         }
 
-
-
         if ( PEAR::isError( $challenge = $this->_doCmd() ) ) {
             $this->_error=$challenge ;
             return $challenge ;
@@ -611,13 +563,10 @@ class Net_Sieve
                 return true;
         }
 
-
-        /*
+        /**
         * We don't use the protocol's third step because SIEVE doesn't allow
         * subsequent authentication, so we just silently ignore it.
         */
-
-
         if ( PEAR::isError($error = $this->_sendStringResponse( '' ) ) ) {
             $this->_error=$error;
             return $error;
@@ -626,12 +575,7 @@ class Net_Sieve
         if (PEAR::isError($res = $this->_doCmd() )) {
             return $res;
         }
-
-
     }
-
-
-
 
     /**
     * Removes a script from the server
@@ -708,7 +652,6 @@ class Net_Sieve
     */
     function _cmdListScripts()
     {
-
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
             $msg='Not currently in AUTHORISATION state';
             $code=1;
@@ -766,6 +709,7 @@ class Net_Sieve
     * Sends the LOGOUT command and terminates the connection
     *
     * @access private
+    * @param boolean $sendLogoutCMD True to send LOGOUT command before disconnecting
     * @return mixed True on success, PEAR_Error otherwise
     */
     function _cmdLogout($sendLogoutCMD=true)
@@ -809,16 +753,15 @@ class Net_Sieve
         return true;
     }
 
-
     /**
     * Checks if the server has space to store the script
     * by the server
     *
-    * @access public
     * @param  string $scriptname The name of the script to mark as active
+    * @param integer $size The size of the script
     * @return mixed              True on success, PEAR_Error otherwise
     */
-    function haveSpace($scriptname,$quota)
+    function haveSpace($scriptname,$size)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
             $msg='Not currently in TRANSACTION state';
@@ -826,22 +769,19 @@ class Net_Sieve
             return $this->_raiseError($msg,$code);
         }
 
-        if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE "%s" %s', $scriptname, $quota) ) ) ) {
-        //if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE %d "%s"',  $quota,$scriptname ) ) ) ) {
+        if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE "%s" %d', $scriptname, $size) ) ) ) {
             return $res;
         }
 
         return true;
     }
 
-
-
-
     /**
-    * Parses the response from the capability command. Storesq
+    * Parses the response from the capability command. Stores
     * the result in $this->_capability
     *
     * @access private
+    * @param string $data The response from the capability command
     */
     function _parseCapability($data)
     {
@@ -891,11 +831,7 @@ class Net_Sieve
             echo "C:$cmd\n";
         }
         return true;
-
-
     }
-
-
 
     /**
     * Sends a string response to the server
@@ -909,14 +845,11 @@ class Net_Sieve
         return $this->_sendCmd($response);
     }
 
-
-
-
     function _recvLn()
     {
         $lastline='';
         if (PEAR::isError( $lastline = $this->_sock->gets( 8192 ) ) ) {
-            return new PEAR_Error('Failed to write to socket: ' . $lastline->getMessage() );
+            return new PEAR_Error( 'Failed to write to socket: ' . $lastline->getMessage() );
         }
         $lastline=rtrim($lastline);
         if($this->_debug){
@@ -925,15 +858,11 @@ class Net_Sieve
         }
 
         if( $lastline === '' ) {
-            return new PEAR_Error('Failed to receive from the  socket'  );
+            return new PEAR_Error( 'Failed to receive from the socket' );
         }
 
         return $lastline;
     }
-
-
-
-
 
     /**
     * Send a command and retrieves a response from the server.
@@ -945,10 +874,8 @@ class Net_Sieve
     */
     function _doCmd($cmd = '' )
     {
-
         $referralCount=0;
         while($referralCount < $this->_maxReferralCount ){
-
 
             if($cmd != '' ){
                 if(PEAR::isError($error = $this->_sendCmd($cmd) )) {
@@ -1029,13 +956,10 @@ class Net_Sieve
         return $this->_raiseError($msg,$code);
     }
 
-
-
-
     /**
-    * Sets the bebug state
+    * Sets the debug state
     *
-    * @access public
+    * @param boolean $debug
     * @return void
     */
     function setDebug($debug = true)
@@ -1046,7 +970,6 @@ class Net_Sieve
     /**
     * Disconnect from the Sieve server
     *
-    * @access public
     * @param  string $scriptname The name of the script to be set as active
     * @return mixed              true on success, PEAR_Error on failure
     */
@@ -1054,7 +977,6 @@ class Net_Sieve
     {
         return $this->_cmdLogout($sendLogoutCMD);
     }
-
 
     /**
      * Returns the name of the best authentication method that the server
@@ -1070,7 +992,6 @@ class Net_Sieve
      */
     function _getBestAuthMethod($userMethod = null)
     {
-
        if( isset($this->_capability['sasl']) ){
            $serverMethods=$this->_capability['sasl'];
        }else{
@@ -1101,14 +1022,9 @@ class Net_Sieve
         }
     }
 
-
-
-
-
     /**
     * Return the list of extensions the server supports
     *
-    * @access public
     * @return mixed              array  on success, PEAR_Error on failure
     */
     function getExtensions()
@@ -1122,14 +1038,9 @@ class Net_Sieve
         return $this->_capability['extensions'];
     }
 
-
-
-
-
     /**
     * Return true if tyhe server has that extension
     *
-    * @access public
     * @param string  the extension to compare
     * @return mixed              array  on success, PEAR_Error on failure
     */
@@ -1150,12 +1061,9 @@ class Net_Sieve
         return false;
     }
 
-
-
     /**
     * Return the list of auth methods the server supports
     *
-    * @access public
     * @return mixed              array  on success, PEAR_Error on failure
     */
     function getAuthMechs()
@@ -1171,14 +1079,9 @@ class Net_Sieve
         return $this->_capability['sasl'];
     }
 
-
-
-
-
     /**
     * Return true if the server has that extension
     *
-    * @access public
     * @param string  the extension to compare
     * @return mixed              array  on success, PEAR_Error on failure
     */
