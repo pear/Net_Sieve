@@ -911,10 +911,10 @@ class Net_Sieve
             echo "S:$lastline\n" ;
         }
 
-/*        if( $lastline === '' ){
-            return new PEAR_Error('Failed to receive from the  socket: '  );
+        if( $lastline === '' ) {
+            return new PEAR_Error('Failed to receive from the  socket'  );
         }
-*/
+
         return $lastline;
     }
 
