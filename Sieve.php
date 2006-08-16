@@ -753,7 +753,9 @@ class Net_Sieve
             return $this->_raiseError($msg,$code);
         }
 
-        if (PEAR::isError($res = $this->_doCmd(sprintf("PUTSCRIPT \"%s\" {%d+}\r\n%s", $scriptname, strlen($scriptdata),$scriptdata ) ))) {
+        $stringLength = $this->_getLineLength($scriptdata);
+
+        if (PEAR::isError($res = $this->_doCmd(sprintf("PUTSCRIPT \"%s\" {%d+}\r\n%s", $scriptname, $stringLength, $scriptdata) ))) {
             return $res;
         }
 
@@ -903,7 +905,7 @@ class Net_Sieve
     */
     function _sendStringResponse($str)
     {
-        $response='{' .  strlen($str) . "+}\r\n" . $str  ;
+        $response='{' .  $this->_getLineLength($str) . "+}\r\n" . $str  ;
         return $this->_sendCmd($response);
     }
 
@@ -1009,11 +1011,13 @@ class Net_Sieve
                         $line_length = 0;
                         while ($line_length < $str_size) {
                             $line .= $this->_sock->read($str_size - $line_length);
-                            $line_length = strlen($line);
+                            $line_length = $this->_getLineLength($line);
                         }
                         if($this->_debug){
                             echo "S:$line\n";
                         }
+                        // receive the pending OK
+                        $this->_recvLn();
                         return $line;
                     }
                     $response .= $line . "\r\n";
@@ -1227,5 +1231,12 @@ class Net_Sieve
         return true;
     }
 
+    function _getLineLength($string) {
+        if (extension_loaded('mbstring') || @dl(PHP_SHLIB_PREFIX.'mbstring.'.PHP_SHLIB_SUFFIX)) {
+          return mb_strlen($string,'latin1');
+        } else {
+          return strlen($string);
+        }
+    }
 }
 ?>
