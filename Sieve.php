@@ -112,6 +112,12 @@ class Net_Sieve
     * @var boolean
     */
     var $_bypassAuth = false;
+    /**
+    * Whether to use TLS if available
+    * @var boolean
+    */
+    var $_useTLS = true;
+
 
 
     /**
@@ -155,8 +161,9 @@ class Net_Sieve
     * @param  string $euser     Effective User (if $user=admin, login as $euser)
     * @param  string $bypassAuth Skip the authentication phase.  Useful if the socket
                                   is already open.
+    * @param  boolean $useTLS Use TLS if available
     */
-    function Net_Sieve($user = null , $pass  = null , $host = 'localhost', $port = 2000, $logintype = '', $euser = '', $debug = false, $bypassAuth = false)
+    function Net_Sieve($user = null , $pass  = null , $host = 'localhost', $port = 2000, $logintype = '', $euser = '', $debug = false, $bypassAuth = false, $useTLS = true)
     {
         $this->_state = NET_SIEVE_STATE_DISCONNECTED;
         $this->_data['user'] = $user;
@@ -168,6 +175,7 @@ class Net_Sieve
         $this->_sock = &new Net_Socket();
         $this->_debug = $debug;
         $this->_bypassAuth = $bypassAuth;
+        $this->_useTLS = $useTLS;
         /*
         * Include the Auth_SASL package.  If the package is not available,
         * we disable the authentication methods that depend upon it.
@@ -218,7 +226,7 @@ class Net_Sieve
     */
     function _handleConnectAndLogin()
     {
-        if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'] ))) {
+        if (PEAR::isError($res = $this->connect($this->_data['host'] , $this->_data['port'], $this->_useTLS ))) {
             return $res;
         }
         if($this->_bypassAuth === false) {
@@ -345,9 +353,10 @@ class Net_Sieve
     * @param  string $host Hostname of server
     * @param  string $port Port of server
     * @param  array  $options List of options to pass to connect
+    * @param  boolean $useTLS Use TLS if available
     * @return mixed        True on success, PEAR_Error otherwise
     */
-    function connect($host, $port, $options = null)
+    function connect($host, $port, $options = null, $useTLS = true)
     {
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
             $msg='Not currently in DISCONNECTED state';
@@ -380,10 +389,12 @@ class Net_Sieve
         // Get logon greeting/capability and parse
         $this->_parseCapability($res);
 
-        // check if we can enable TLS via STARTTLS
-        if(isset($this->_capability['starttls']) && function_exists('stream_socket_enable_crypto') === true) {
-            if (PEAR::isError($res = $this->_startTLS())) {
-                return $res;
+        if($useTLS === true) {
+            // check if we can enable TLS via STARTTLS
+            if(isset($this->_capability['starttls']) && function_exists('stream_socket_enable_crypto') === true) {
+                if (PEAR::isError($res = $this->_startTLS())) {
+                    return $res;
+                }
             }
         }
 
