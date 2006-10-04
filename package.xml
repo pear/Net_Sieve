@@ -28,11 +28,11 @@ sieve scripts.
   <email>amistry@am-productions.biz</email>
   <active>yes</active>
  </lead>
- <date>2006-04-01</date>
- <time>15:32:45</time>
+ <date>2006-09-09</date>
+ <time>16:49:20</time>
  <version>
-  <release>1.1.3</release>
-  <api>1.1.3</api>
+  <release>1.1.4</release>
+  <api>1.1.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -40,9 +40,10 @@ sieve scripts.
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
-* Fixed Bug #7197 getScript() truncates long scripts
-* Added PHPUnit2 regression test script
+     * Fixed Bug #8452 Unterminated read loop
+     * Fixed Bug #7845 Add mbstring support
+     * Added Request #8071 Enable the ability to toggle TLS support if available.
+             * Added Request #8453 Clean up PHPDoc and comments
  </notes>
  <contents>
   <dir name="/">
@@ -68,6 +69,39 @@ sieve scripts.
  </dependencies>
  <phprelease />
  <changelog>
+     <release>
+         <version>
+             <release>1.1.4</release>
+             <api>1.1.4</api>
+         </version>
+         <stability>
+             <release>stable</release>
+             <api>stable</api>
+         </stability>
+         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+         <notes>
+             * Fixed Bug #8452 Unterminated read loop
+             * Fixed Bug #7845 Add mbstring support
+             * Added Request #8071 Enable the ability to toggle TLS support if available.
+             * Added Request #8453 Clean up PHPDoc and comments
+         </notes>
+     </release>
+     <release>
+         <version>
+             <release>1.1.3</release>
+             <api>1.1.3</api>
+         </version>
+         <stability>
+             <release>stable</release>
+             <api>stable</api>
+         </stability>
+         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+         <notes>
+             * Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
+             * Fixed Bug #7197 getScript() truncates long scripts
+             * Added PHPUnit2 regression test script
+         </notes>
+  </release>
   <release>
       <version>
           <release>1.1.2</release>
