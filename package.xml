@@ -28,11 +28,11 @@ sieve scripts.
   <email>amistry@am-productions.biz</email>
   <active>yes</active>
  </lead>
- <date>2006-09-09</date>
+ <date>2006-10-24</date>
  <time>16:49:20</time>
  <version>
-  <release>1.1.4</release>
-  <api>1.1.4</api>
+  <release>1.1.5</release>
+  <api>1.1.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -69,6 +69,21 @@ sieve scripts.
  </dependencies>
  <phprelease />
  <changelog>
+     <release>
+         <version>
+             <release>1.1.5</release>
+             <api>1.1.5</api>
+         </version>
+         <stability>
+             <release>stable</release>
+             <api>stable</api>
+         </stability>
+         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+         <notes>
+             * Fixed Bug connect() bug
+             * Fixed Request #8071
+         </notes>
+     </release>
      <release>
          <version>
              <release>1.1.4</release>
