@@ -66,7 +66,7 @@ define('NET_SIEVE_STATE_TRANSACTION',   3, true);
 * comes with Cyrus IMAP.
 *
 * SIEVE: RFC3028 http://www.ietf.org/rfc/rfc3028.txt
-* MANAGE-SIEVE: http://www.ietf.org/internet-drafts/draft-martin-managesieve-06.txt
+* MANAGE-SIEVE: http://www.ietf.org/internet-drafts/draft-martin-managesieve-07.txt
 *
 * @author  Richard Heyes <richard@php.net>
 * @author  Damian Fernandez Sosa <damlists@cnba.uba.ar>
@@ -505,8 +505,8 @@ class Net_Sieve
     function _authCRAM_MD5($uid, $pwd, $euser)
     {
         if ( PEAR::isError( $challenge = $this->_doCmd( 'AUTHENTICATE "CRAM-MD5"' ) ) ) {
-            $this->_error=challenge ;
-            return challenge ;
+            $this->_error=$challenge;
+            return $challenge;
         }
         $challenge=trim($challenge);
         $challenge = base64_decode( trim($challenge) );
@@ -538,8 +538,8 @@ class Net_Sieve
     function _authDigest_MD5($uid, $pwd, $euser)
     {
         if ( PEAR::isError( $challenge = $this->_doCmd('AUTHENTICATE "DIGEST-MD5"') ) ) {
-            $this->_error=challenge ;
-            return challenge ;
+            $this->_error= $challenge;
+            return $challenge;
         }
         $challenge = base64_decode( $challenge );
         $digest = &Auth_SASL::factory('digestmd5');
@@ -943,8 +943,12 @@ class Net_Sieve
                         if($this->_debug){
                             echo "S:$line\n";
                         }
-                        // receive the pending OK
-                        $this->_recvLn();
+                        if($this->_state != NET_SIEVE_STATE_AUTHORISATION) {
+                            // receive the pending OK only if we aren't authenticating
+                            // since string responses during authentication don't need an
+                            // OK.
+                            $this->_recvLn();
+                        }
                         return $line;
                     }
                     $response .= $line . "\r\n";
