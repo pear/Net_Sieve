@@ -28,11 +28,11 @@ sieve scripts.
   <email>amistry@am-productions.biz</email>
   <active>yes</active>
  </lead>
- <date>2006-10-24</date>
+ <date>2008-03-22</date>
  <time>16:49:20</time>
  <version>
-  <release>1.1.5</release>
-  <api>1.1.5</api>
+  <release>1.1.6</release>
+  <api>1.1.6</api>
  </version>
  <stability>
   <release>stable</release>
@@ -40,11 +40,9 @@ sieve scripts.
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-     * Fixed Bug #8452 Unterminated read loop
-     * Fixed Bug #7845 Add mbstring support
-     * Added Request #8071 Enable the ability to toggle TLS support if available.
-             * Added Request #8453 Clean up PHPDoc and comments
- </notes>
+	* Fixed Bug #9273
+	* Fixed copy/paste error in CRAM and DIGEST authentication error case.
+</notes>
  <contents>
   <dir name="/">
    <file baseinstalldir="Net" name="Sieve.php" role="php" />
@@ -69,6 +67,21 @@ sieve scripts.
  </dependencies>
  <phprelease />
  <changelog>
+	 <release>
+		 <version>
+			 <release>1.1.6</release>
+			 <api>1.1.6</api>
+		 </version>
+		 <stability>
+			 <release>stable</release>
+			 <api>stable</api>
+		 </stability>
+		 <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+		 <notes>
+			 * Fixed Bug #9273
+			 * Fixed copy/paste error in CRAM and DIGEST authentication error case.
+		 </notes>
+     </release>
      <release>
          <version>
              <release>1.1.5</release>
