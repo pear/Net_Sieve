@@ -1162,6 +1162,10 @@ class Net_Sieve
             echo "STARTTLS Negotiation Successful\n";
         }
 
+        // The server should be sending a CAPABILITY response after
+        // negotiating TLS. Read it, and ignore if it doesn't.
+        $this->_doCmd();
+
         // RFC says we need to query the server capabilities again now that
         // we are under encryption
         if(PEAR::isError($res = $this->_cmdCapability() )) {

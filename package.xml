@@ -32,10 +32,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2008-03-22</date>
- <time>16:49:20</time>
+ <date>2009-07-24</date>
  <version>
-  <release>1.1.6</release>
+  <release>1.1.7</release>
   <api>1.1.6</api>
  </version>
  <stability>
@@ -44,8 +43,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-  * Fixed Bug #9273
-  * Fixed copy/paste error in CRAM and DIGEST authentication error case.
+  * Fixed STARTTLS support (Bug #14205).
 </notes>
  <contents>
   <dir name="/">
