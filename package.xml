@@ -6,10 +6,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <name>Net_Sieve</name>
  <channel>pear.php.net</channel>
  <summary>Handles talking to timsieved</summary>
- <description>Provides an API to talk to the timsieved server that comes
-with Cyrus IMAPd. Can be used to install, remove, mark active etc
-sieve scripts.
+ <description>Provides an API to talk to the timsieved server that comes with Cyrus IMAPd. Can be used to install, remove, mark active etc sieve scripts.
  </description>
+ <lead>
+  <name>Jan Schneider</name>
+  <user>yunosh</user>
+  <email>jan@horde.org</email>
+  <active>yes</active>
+ </lead>
  <lead>
   <name>Richard Heyes</name>
   <user>richard</user>
@@ -26,7 +30,7 @@ sieve scripts.
   <name>Anish Mistry</name>
   <user>amistry</user>
   <email>amistry@am-productions.biz</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
  <date>2008-03-22</date>
  <time>16:49:20</time>
@@ -40,8 +44,8 @@ sieve scripts.
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-	* Fixed Bug #9273
-	* Fixed copy/paste error in CRAM and DIGEST authentication error case.
+  * Fixed Bug #9273
+  * Fixed copy/paste error in CRAM and DIGEST authentication error case.
 </notes>
  <contents>
   <dir name="/">
@@ -67,85 +71,85 @@ sieve scripts.
  </dependencies>
  <phprelease />
  <changelog>
-	 <release>
-		 <version>
-			 <release>1.1.6</release>
-			 <api>1.1.6</api>
-		 </version>
-		 <stability>
-			 <release>stable</release>
-			 <api>stable</api>
-		 </stability>
-		 <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-		 <notes>
-			 * Fixed Bug #9273
-			 * Fixed copy/paste error in CRAM and DIGEST authentication error case.
-		 </notes>
-     </release>
-     <release>
-         <version>
-             <release>1.1.5</release>
-             <api>1.1.5</api>
-         </version>
-         <stability>
-             <release>stable</release>
-             <api>stable</api>
-         </stability>
-         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-         <notes>
-             * Fixed Bug connect() bug
-             * Fixed Request #8071
-         </notes>
-     </release>
-     <release>
-         <version>
-             <release>1.1.4</release>
-             <api>1.1.4</api>
-         </version>
-         <stability>
-             <release>stable</release>
-             <api>stable</api>
-         </stability>
-         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-         <notes>
-             * Fixed Bug #8452 Unterminated read loop
-             * Fixed Bug #7845 Add mbstring support
-             * Added Request #8071 Enable the ability to toggle TLS support if available.
-             * Added Request #8453 Clean up PHPDoc and comments
-         </notes>
-     </release>
-     <release>
-         <version>
-             <release>1.1.3</release>
-             <api>1.1.3</api>
-         </version>
-         <stability>
-             <release>stable</release>
-             <api>stable</api>
-         </stability>
-         <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-         <notes>
-             * Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
-             * Fixed Bug #7197 getScript() truncates long scripts
-             * Added PHPUnit2 regression test script
-         </notes>
+  <release>
+   <version>
+    <release>1.1.6</release>
+    <api>1.1.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+    * Fixed Bug #9273
+    * Fixed copy/paste error in CRAM and DIGEST authentication error case.
+   </notes>
   </release>
   <release>
-      <version>
-          <release>1.1.2</release>
-          <api>1.1.2</api>
-      </version>
-      <stability>
-          <release>stable</release>
-          <api>stable</api>
-      </stability>
-      <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-      <notes>* Fixed Request #4053 Added STARTTLS support for PHP 5.1 and above
-          * Fixed Bug #3519 Net_Sieve w/ externally established sockets
-          * Fixed Bug #4794 drops protocol prefix, e.g. &quot;ssl://&quot; in referrals
-          * Fixed STARTTLS detection
-          * Allow $options[] to be passed to Net_Socket
-      </notes>
+   <version>
+    <release>1.1.5</release>
+    <api>1.1.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+    * Fixed Bug connect() bug
+    * Fixed Request #8071
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.4</release>
+    <api>1.1.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+    * Fixed Bug #8452 Unterminated read loop
+    * Fixed Bug #7845 Add mbstring support
+    * Added Request #8071 Enable the ability to toggle TLS support if available.
+    * Added Request #8453 Clean up PHPDoc and comments
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.3</release>
+    <api>1.1.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+    * Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
+    * Fixed Bug #7197 getScript() truncates long scripts
+    * Added PHPUnit2 regression test script
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.2</release>
+    <api>1.1.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>* Fixed Request #4053 Added STARTTLS support for PHP 5.1 and above
+    * Fixed Bug #3519 Net_Sieve w/ externally established sockets
+    * Fixed Bug #4794 drops protocol prefix, e.g. &quot;ssl://&quot; in referrals
+    * Fixed STARTTLS detection
+    * Allow $options[] to be passed to Net_Socket
+   </notes>
   </release>
   <release>
    <version>
