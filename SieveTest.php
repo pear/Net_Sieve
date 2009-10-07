@@ -141,7 +141,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
-        $this->assertEquals($scriptname, $diff_scripts[0], 0, 'Added script has a different name');
+        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
 
         // Second script (install and activate)
         $scriptname = 'test script2';
@@ -151,9 +151,9 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
-        $this->assertEquals($scriptname, $diff_scripts[0], 0, 'Added script has a different name');
+        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $active_script = $this->fixture->getActive();
-        $this->assertEquals($scriptname, $active_script, 0, 'Added script has a different name');
+        $this->assertEquals($scriptname, $active_script, 'Added script has a different name');
         $this->logout();
     }
 
@@ -170,7 +170,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(PEAR::isError($result), 'Unable to upload large script (expected behavior for most servers)');
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_diff($before_scripts, $after_scripts);
-        $this->assertEquals($scriptname, $diff_scripts[0], 0, 'Added script has a different name');
+        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $this->logout();
     }
 
@@ -184,9 +184,9 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0);
-        $this->assertEquals($scriptname, $diff_scripts[0], 0, 'Added script has a different name');
+        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $script = $this->fixture->getScript($scriptname);
-        $this->assertEquals(trim($this->scripts[$scriptname]), trim($script), 0, 'Script installed it not the same script retrieved');
+        $this->assertEquals(trim($this->scripts[$scriptname]), trim($script), 'Script installed it not the same script retrieved');
         $this->logout();
     }
 
@@ -206,7 +206,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $result = $this->fixture->setActive($scriptname);
         $this->assertFalse(PEAR::isError($result), 'Can not set active script');
         $active_script = $this->fixture->getActive();
-        $this->assertEquals($scriptname, $active_script, 0, 'Active script does not match');
+        $this->assertEquals($scriptname, $active_script, 'Active script does not match');
 
         // Test for non-existant script.
         $result = $this->fixture->setActive('non existant script');
