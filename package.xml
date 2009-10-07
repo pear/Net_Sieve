@@ -42,7 +42,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).</notes>
+ <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
+* Fix breakage with certain locales, especially Turkish.
+* Code cleanup.</notes>
  <contents>
   <dir name="/">
    <file baseinstalldir="Net" name="Sieve.php" role="php" />
