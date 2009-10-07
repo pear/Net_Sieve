@@ -46,10 +46,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
 * Fix breakage with certain locales, especially Turkish.
 * Code cleanup.</notes>
  <contents>
-  <dir name="/">
-   <file baseinstalldir="Net" name="Sieve.php" role="php" />
-   <file baseinstalldir="Net" name="SieveTest.php" role="test" />
-   <file baseinstalldir="Net" name="largescript.siv" role="test" />
+  <dir name="/" baseinstalldir="Net">
+   <dir name="tests">
+    <file name="largescript.siv" role="test" />
+    <file name="password.inc.php" role="test" />
+    <file name="SieveTest.php" role="test" />
+   </dir> <!-- /tests -->
+   <file name="Sieve.php" role="php" />
   </dir> <!-- / -->
  </contents>
  <dependencies>

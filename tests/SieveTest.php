@@ -39,8 +39,8 @@
  * @link      http://pear.php.net/package/Net_Sieve
  */
 
-require_once './password.inc.php';
-require_once './Sieve.php';
+require_once dirname(__FILE__) . '/password.inc.php';
+require_once dirname(__FILE__) . '/../Sieve.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
@@ -67,7 +67,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
             'test script1' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test script2' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test script3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
-            'test script4' => file_get_contents("largescript.siv"));
+            'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
         // clear all the scripts in the account
         $this->login();
         $scripts = $this->fixture->listScripts();
