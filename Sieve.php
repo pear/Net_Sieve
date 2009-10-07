@@ -43,6 +43,7 @@
  * @link      http://pear.php.net/package/Net_Sieve
  */
 
+require_once 'PEAR.php';
 require_once 'Net/Socket.php';
 
 /**
@@ -239,20 +240,6 @@ class Net_Sieve
     }
 
     /**
-     * Handles the errors the class can find on the server.
-     *
-     * @param string|PEAR_Error $msg  Error message or PEAR_Error object.
-     * @param integer           $code Numeric error code.
-     *
-     * @return PEAR_Error
-     */
-    function _raiseError($msg, $code)
-    {
-        include_once 'PEAR.php';
-        return PEAR::raiseError($msg, $code);
-    }
-
-    /**
      * Connects to the server and logs in.
      *
      * @return boolean  True on success, PEAR_Error on failure.
@@ -381,7 +368,7 @@ class Net_Sieve
     function connect($host, $port, $options = null, $useTLS = true)
     {
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
-            return $this->_raiseError('Not currently in DISCONNECTED state', 1);
+            return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
         }
 
         if (PEAR::isError($res = $this->_sock->connect($host, $port, false, 5, $options))) {
@@ -400,7 +387,7 @@ class Net_Sieve
         // Explicitly ask for the capabilities in case the connection is
         // picked up from an existing connection.
         if (PEAR::isError($res = $this->_cmdCapability())) {
-            return $this->_raiseError(
+            return PEAR::raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
             );
         }
@@ -431,7 +418,7 @@ class Net_Sieve
     function login($user, $pass, $logintype = null, $euser = '', $bypassAuth = false)
     {
         if (NET_SIEVE_STATE_AUTHORISATION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
 
         if (!$bypassAuth ) {
@@ -476,7 +463,7 @@ class Net_Sieve
             $result = $this->_authEXTERNAL($uid, $pwd, $euser);
             break;
         default :
-            $result = $this->_raiseError(
+            $result = PEAR::raiseError(
                 $method . ' is not a supported authentication method'
             );
             break;
@@ -608,7 +595,7 @@ class Net_Sieve
     {
         $cmd = sprintf(
             'AUTHENTICATE "EXTERNAL" "%s"',
-            base64_encode(strlen($euser) = $euser : $user)
+            base64_encode(strlen($euser) ? $euser : $user)
         );
         return $this->_sendCmd($cmd);
     }
@@ -623,7 +610,7 @@ class Net_Sieve
     function _cmdDeleteScript($scriptname)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
         if (PEAR::isError($res = $this->_doCmd(sprintf('DELETESCRIPT "%s"', $scriptname)))) {
             return $res;
@@ -641,7 +628,7 @@ class Net_Sieve
     function _cmdGetScript($scriptname)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
 
         if (PEAR::isError($res = $this->_doCmd(sprintf('GETSCRIPT "%s"', $scriptname)))) {
@@ -662,7 +649,7 @@ class Net_Sieve
     function _cmdSetActive($scriptname)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
         if (PEAR::isError($res = $this->_doCmd(sprintf('SETACTIVE "%s"', $scriptname)))) {
             return $res;
@@ -681,7 +668,7 @@ class Net_Sieve
     function _cmdListScripts()
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
 
         if (PEAR::isError($res = $this->_doCmd('LISTSCRIPTS'))) {
@@ -714,7 +701,7 @@ class Net_Sieve
     function _cmdPutScript($scriptname, $scriptdata)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in AUTHORISATION state', 1);
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
 
         $stringLength = $this->_getLineLength($scriptdata);
@@ -737,7 +724,7 @@ class Net_Sieve
     function _cmdLogout($sendLogoutCMD = true)
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 1);
+            return PEAR::raiseError('Not currently connected', 1);
         }
 
         if ($sendLogoutCMD) {
@@ -760,7 +747,7 @@ class Net_Sieve
     function _cmdCapability()
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 1);
+            return PEAR::raiseError('Not currently connected', 1);
         }
         if (PEAR::isError($res = $this->_doCmd('CAPABILITY'))) {
             return $res;
@@ -780,7 +767,7 @@ class Net_Sieve
     function haveSpace($scriptname,$size)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return $this->_raiseError('Not currently in TRANSACTION state', 1);
+            return PEAR::raiseError('Not currently in TRANSACTION state', 1);
         }
         if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE "%s" %d', $scriptname, $size)))) {
             return $res;
@@ -921,12 +908,12 @@ class Net_Sieve
                         );
                         $this->_debug("S: $line");
                     }
-                    return $this->_raiseError(trim($response . substr($line, 2)), 3);
+                    return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
 
                 if ('bye' === strtolower(substr($line, 0, 3))) {
                     if (PEAR::isError($error = $this->disconnect(false))) {
-                        return $this->_raiseError(
+                        return PEAR::raiseError(
                             'Cannot handle BYE, the error was: '
                             . $error->getMessage(),
                             4
@@ -942,7 +929,7 @@ class Net_Sieve
                             $this->_data['host']
                         );
                         if (PEAR::isError($error = $this->_handleConnectAndLogin())) {
-                            return $this->_raiseError(
+                            return PEAR::raiseError(
                                 'Cannot follow referral to '
                                 . $this->_data['host'] . ', the error was: '
                                 . $error->getMessage(),
@@ -951,7 +938,7 @@ class Net_Sieve
                         }
                         break;
                     }
-                    return $this->_raiseError(trim($response . $line), 6);
+                    return PEAR::raiseError(trim($response . $line), 6);
                 }
 
                 if (preg_match('/^{([0-9]+)\+?}/i', $line, $matches)) {
@@ -979,7 +966,7 @@ class Net_Sieve
             }
         }
 
-        return $this->_raiseError('Max referral count (' . $referralCount . ') reached. Cyrus murder loop error?', 7);
+        return PEAR::raiseError('Max referral count (' . $referralCount . ') reached. Cyrus murder loop error?', 7);
     }
 
     /**
@@ -1060,7 +1047,7 @@ class Net_Sieve
     function getExtensions()
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 7);
+            return PEAR::raiseError('Not currently connected', 7);
         }
         return $this->_capability['extensions'];
     }
@@ -1076,7 +1063,7 @@ class Net_Sieve
     function hasExtension($extension)
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 7);
+            return PEAR::raiseError('Not currently connected', 7);
         }
 
         if (is_array($this->_capability['extensions'])) {
@@ -1098,7 +1085,7 @@ class Net_Sieve
     function getAuthMechs()
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 7);
+            return PEAR::raiseError('Not currently connected', 7);
         }
         return $this->_capability['sasl'];
     }
@@ -1114,7 +1101,7 @@ class Net_Sieve
     function hasAuthMech($method)
     {
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return $this->_raiseError('Not currently connected', 7);
+            return PEAR::raiseError('Not currently connected', 7);
         }
 
         if (is_array($this->_capability['sasl'])) {
@@ -1140,7 +1127,7 @@ class Net_Sieve
         }
 
         if (!stream_socket_enable_crypto($this->_sock->fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            return $this->_raiseError('Failed to establish TLS connection', 2);
+            return PEAR::raiseError('Failed to establish TLS connection', 2);
         }
 
         $this->_debug('STARTTLS negotiation successful');
@@ -1152,7 +1139,7 @@ class Net_Sieve
         // RFC says we need to query the server capabilities again now that we
         // are under encryption.
         if (PEAR::isError($res = $this->_cmdCapability())) {
-            return $this->_raiseError(
+            return PEAR::raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
             );
         }
