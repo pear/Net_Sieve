@@ -506,7 +506,7 @@ class Net_Sieve
             return PEAR::raiseError('Not currently connected', 7);
         }
 
-        $extension = trim($this->_toLower($extension));
+        $extension = trim($this->_toUpper($extension));
         if (is_array($this->_capability['extensions'])) {
             foreach ($this->_capability['extensions'] as $ext) {
                 if ($ext == $extension) {
@@ -545,7 +545,7 @@ class Net_Sieve
             return PEAR::raiseError('Not currently connected', 7);
         }
 
-        $method = trim($this->_toLower($method));
+        $method = trim($this->_toUpper($method));
         if (is_array($this->_capability['sasl'])) {
             foreach ($this->_capability['sasl'] as $sasl) {
                 if ($sasl == $method) {
@@ -693,7 +693,7 @@ class Net_Sieve
         if (PEAR::isError($result = $this->_doCmd())) {
             return $result;
         }
-        if ($this->_toLower(substr($result, 0, 2)) == 'ok') {
+        if ($this->_toUpper(substr($result, 0, 2)) == 'OK') {
             return;
         }
 
@@ -896,26 +896,26 @@ class Net_Sieve
         $this->_capability = array('sasl' => array(),
                                    'extensions' => array());
 
-        $data = preg_split('/\r?\n/', $this->_toLower($data), -1, PREG_SPLIT_NO_EMPTY);
+        $data = preg_split('/\r?\n/', $this->_toUpper($data), -1, PREG_SPLIT_NO_EMPTY);
 
         for ($i = 0; $i < count($data); $i++) {
-            if (!preg_match('/^"([a-z]+)"( "(.*)")?$/', $data[$i], $matches)) {
+            if (!preg_match('/^"([A-Z]+)"( "(.*)")?$/', $data[$i], $matches)) {
                 continue;
             }
             switch ($matches[1]) {
-            case 'implementation':
+            case 'IMPLEMENTATION':
                 $this->_capability['implementation'] = $matches[3];
                 break;
 
-            case 'sasl':
+            case 'SASL':
                 $this->_capability['sasl'] = preg_split('/\s+/', $matches[3]);
                 break;
 
-            case 'sieve':
+            case 'SIEVE':
                 $this->_capability['extensions'] = preg_split('/\s+/', $matches[3]);
                 break;
 
-            case 'starttls':
+            case 'STARTTLS':
                 $this->_capability['starttls'] = true;
                 break;
             }
@@ -1001,14 +1001,14 @@ class Net_Sieve
                 if (PEAR::isError($line = $this->_recvLn())) {
                     return $line;
                 }
-                $lc_line = $this->_toLower($line);
+                $uc_line = $this->_toUpper($line);
 
-                if ('ok' == substr($lc_line, 0, 2)) {
+                if ('OK' == substr($uc_line, 0, 2)) {
                     $response .= $line;
                     return rtrim($response);
                 }
 
-                if ('no' == substr($lc_line, 0, 2)) {
+                if ('NO' == substr($uc_line, 0, 2)) {
                     // Check for string literal error message.
                     if (preg_match('/^no {([0-9]+)\+?}/i', $line, $matches)) {
                         $line .= str_replace(
@@ -1019,7 +1019,7 @@ class Net_Sieve
                     return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
 
-                if ('bye' === substr($lc_line, 0, 3)) {
+                if ('BYE' === substr($uc_line, 0, 3)) {
                     if (PEAR::isError($error = $this->disconnect(false))) {
                         return PEAR::raiseError(
                             'Cannot handle BYE, the error was: '
@@ -1171,17 +1171,17 @@ class Net_Sieve
     }
 
     /**
-     * Locale independant strtolower() implementation.
+     * Locale independant strtoupper() implementation.
      *
      * @param string $string The string to convert to lowercase.
      *
      * @return string  The lowercased string, based on ASCII encoding.
      */
-    function _toLower($string)
+    function _toUpper($string)
     {
         $language = setlocale(LC_CTYPE, 0);
         setlocale(LC_CTYPE, 'C');
-        $string = strtolower($string);
+        $string = strtoupper($string);
         setlocale(LC_CTYPE, $language);
         return $string;
     }
