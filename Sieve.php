@@ -109,6 +109,13 @@ class Net_Sieve
     var $_debug = false;
 
     /**
+    * Debug output handler
+    * @var callback
+    * @access private
+    */
+    var $_debug_handler = null;
+			
+    /**
     * Allows picking up of an already established connection
     * @var boolean
     */
@@ -184,14 +191,11 @@ class Net_Sieve
         * we disable the authentication methods that depend upon it.
         */
         if ((@include_once 'Auth/SASL.php') === false) {
-            if($this->_debug){
-                echo "AUTH_SASL NOT PRESENT!\n";
-            }
-            foreach($this->supportedSASLAuthMethods as $SASLMethod){
+            $this->_debug("AUTH_SASL NOT PRESENT!");
+
+            foreach ($this->supportedSASLAuthMethods as $SASLMethod) {
                 $pos = array_search( $SASLMethod, $this->supportedAuthMethods );
-                if($this->_debug){
-                    echo "DISABLING METHOD $SASLMethod\n";
-                }
+                $this->_debug("DISABLING METHOD $SASLMethod");
                 unset($this->supportedAuthMethods[$pos]);
             }
         }
@@ -859,10 +863,8 @@ class Net_Sieve
             return new PEAR_Error( 'Failed to write to socket: ' . $error->getMessage() );
         }
 
-        if( $this->_debug ){
-            // C: means this data was sent by  the client (this class)
-            echo "C:$cmd\n";
-        }
+        $this->_debug("C: $cmd");
+
         return true;
     }
 
@@ -885,10 +887,8 @@ class Net_Sieve
             return new PEAR_Error( 'Failed to write to socket: ' . $lastline->getMessage() );
         }
         $lastline=rtrim($lastline);
-        if($this->_debug){
-            // S: means this data was sent by  the IMAP Server
-            echo "S:$lastline\n" ;
-        }
+
+        $this->_debug("S: $lastline");
 
         if( $lastline === '' ) {
             return new PEAR_Error( 'Failed to receive from the socket' );
@@ -929,9 +929,7 @@ class Net_Sieve
                         // Check for string literal error message
                         if (preg_match('/^no {([0-9]+)\+?}/i', $line, $matches)) {
                             $line .= str_replace("\r\n", ' ', $this->_sock->read($matches[1] + 2 ));
-                            if($this->_debug){
-                                echo "S:$line\n";
-                            }
+                            $this->_debug("S: $line");
                         }
                         $msg=trim($response . substr($line, 2));
                         $code=3;
@@ -973,9 +971,8 @@ class Net_Sieve
                             $line .= $this->_sock->read($str_size - $line_length);
                             $line_length = $this->_getLineLength($line);
                         }
-                        if($this->_debug){
-                            echo "S:$line\n";
-                        }
+                        $this->_debug("S: $line");
+
                         if($this->_state != NET_SIEVE_STATE_AUTHORISATION) {
                             // receive the pending OK only if we aren't authenticating
                             // since string responses during authentication don't need an
@@ -994,14 +991,16 @@ class Net_Sieve
     }
 
     /**
-    * Sets the debug state
+    * Sets the debug state and handler function
     *
     * @param boolean $debug
+    * @param function $handler
     * @return void
     */
-    function setDebug($debug = true)
+    function setDebug($debug = true, $handler = null)
     {
         $this->_debug = $debug;
+	$this->_debug_handler = $handler;
     }
 
     /**
@@ -1158,9 +1157,7 @@ class Net_Sieve
             return $this->_raiseError($msg,$code);
         }
 
-        if($this->_debug === true) {
-            echo "STARTTLS Negotiation Successful\n";
-        }
+        $this->_debug("STARTTLS Negotiation Successful");
 
         // The server should be sending a CAPABILITY response after
         // negotiating TLS. Read it, and ignore if it doesn't.
@@ -1179,10 +1176,27 @@ class Net_Sieve
 
     function _getLineLength($string) {
         if (extension_loaded('mbstring') || @dl(PHP_SHLIB_PREFIX.'mbstring.'.PHP_SHLIB_SUFFIX)) {
-          return mb_strlen($string,'latin1');
+    	    return mb_strlen($string,'latin1');
         } else {
-          return strlen($string);
+    	    return strlen($string);
         }
+    }
+    /**
+    * Write the given debug text to the current debug output handler.
+    *
+    * @param   string  $message    Debug mesage text.
+    *
+    * @access  private
+    */
+    function _debug($message) {
+	if ($this->_debug) {
+	    if ($this->_debug_handler) {
+        	call_user_func_array($this->_debug_handler,
+            	    array(&$this, $message));
+	    } else {
+	        echo "$message\n";
+	    }
+	}
     }
 }
 ?>

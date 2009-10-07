@@ -32,18 +32,17 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2009-07-24</date>
+ <date>2009-10-07</date>
  <version>
-  <release>1.1.7</release>
-  <api>1.1.6</api>
+  <release>1.2.0</release>
+  <api>1.2.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Fixed STARTTLS support (Bug #14205).
-* Added connect options and EXTERNAL authentication.</notes>
+ <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).</notes>
  <contents>
   <dir name="/">
    <file baseinstalldir="Net" name="Sieve.php" role="php" />
@@ -68,6 +67,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2009-07-24</date>
+   <version>
+    <release>1.1.7</release>
+    <api>1.1.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>* Fixed STARTTLS support (Bug #14205).
+* Added connect options and EXTERNAL authentication.</notes>
+  </release>
   <release>
    <version>
     <release>1.1.6</release>
