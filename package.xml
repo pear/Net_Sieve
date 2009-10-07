@@ -5,9 +5,8 @@ http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Net_Sieve</name>
  <channel>pear.php.net</channel>
- <summary>Handles talking to timsieved</summary>
- <description>Provides an API to talk to the timsieved server that comes with Cyrus IMAPd. Can be used to install, remove, mark active etc sieve scripts.
- </description>
+ <summary>Handles talking to a sieve server.</summary>
+ <description>This package provides an API to talk to servers implementing the managesieve protocol. It can be used to install, remove, mark active etc sieve scripts.</description>
  <lead>
   <name>Jan Schneider</name>
   <user>yunosh</user>
