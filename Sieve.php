@@ -652,7 +652,7 @@ class Net_Sieve
      */
     function _authCRAMMD5($user, $pass, $euser)
     {
-        if (PEAR::isError($challenge = $this->_doCmd('AUTHENTICATE "CRAM-MD5"'))) {
+        if (PEAR::isError($challenge = $this->_doCmd('AUTHENTICATE "CRAM-MD5"', true))) {
             return $challenge;
         }
 
@@ -676,7 +676,7 @@ class Net_Sieve
      */
     function _authDigestMD5($user, $pass, $euser)
     {
-        if (PEAR::isError($challenge = $this->_doCmd('AUTHENTICATE "DIGEST-MD5"'))) {
+        if (PEAR::isError($challenge = $this->_doCmd('AUTHENTICATE "DIGEST-MD5"', true))) {
             return $challenge;
         }
 
@@ -981,12 +981,13 @@ class Net_Sieve
     /**
      * Send a command and retrieves a response from the server.
      *
-     * @param string $cmd The command to send.
+     * @param string $cmd   The command to send.
+     * @param boolean $auth Whether this is an authentication command.
      *
      * @return string|PEAR_Error  Reponse string if an OK response, PEAR_Error
      *                            if a NO response.
      */
-    function _doCmd($cmd = '')
+    function _doCmd($cmd = '', $auth = false)
     {
         $referralCount = 0;
         while ($referralCount < $this->_maxReferralCount) {
@@ -1019,7 +1020,7 @@ class Net_Sieve
                     return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
 
-                if ('BYE' === substr($uc_line, 0, 3)) {
+                if ('BYE' == substr($uc_line, 0, 3)) {
                     if (PEAR::isError($error = $this->disconnect(false))) {
                         return PEAR::raiseError(
                             'Cannot handle BYE, the error was: '
@@ -1060,13 +1061,20 @@ class Net_Sieve
                     }
                     $this->_debug("S: $line");
 
-                    if ($this->_state != NET_SIEVE_STATE_AUTHORISATION) {
+                    if (!$auth) {
                         // Receive the pending OK only if we aren't
                         // authenticating since string responses during
                         // authentication don't need an OK.
                         $this->_recvLn();
                     }
                     return $line;
+                }
+
+                if ($auth) {
+                    // String responses during authentication don't need an
+                    // OK.
+                    $response .= $line;
+                    return rtrim($response);
                 }
 
                 $response .= $line . "\r\n";

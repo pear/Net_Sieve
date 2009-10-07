@@ -34,8 +34,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </lead>
  <date>2009-10-07</date>
  <version>
-  <release>1.2.0</release>
-  <api>1.2.0b1</api>
+  <release>1.2.0b1</release>
+  <api>1.2.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -44,6 +44,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
 * Fix breakage with certain locales, especially Turkish.
+* Fix reading authentication responses without literals (Bug #16647).
 * Code cleanup.</notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
