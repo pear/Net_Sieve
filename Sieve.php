@@ -240,6 +240,30 @@ class Net_Sieve
     }
 
     /**
+     * Returns any error that may have been generated in the constructor.
+     *
+     * @return boolean|PEAR_Error  False if no error, PEAR_Error otherwise.
+     */
+    function getError()
+    {
+        return PEAR::isError($this->_error) ? $this->_error : false;
+    }
+
+    /**
+     * Sets the debug state and handler function.
+     *
+     * @param boolean $debug   Whether to enable debugging.
+     * @param string  $handler A custom debug handler. Must be a valid callback.
+     *
+     * @return void
+     */
+    function setDebug($debug = true, $handler = null)
+    {
+        $this->_debug = $debug;
+        $this->_debug_handler = $handler;
+    }
+
+    /**
      * Connects to the server and logs in.
      *
      * @return boolean  True on success, PEAR_Error on failure.
@@ -254,6 +278,96 @@ class Net_Sieve
                 return $res;
             }
         }
+        return true;
+    }
+
+    /**
+     * Handles connecting to the server and checks the response validity.
+     *
+     * @param string  $host    Hostname of server.
+     * @param string  $port    Port of server.
+     * @param array   $options List of options to pass to
+     *                         stream_context_create().
+     * @param boolean $useTLS  Use TLS if available.
+     *
+     * @return boolean  True on success, PEAR_Error otherwise.
+     */
+    function connect($host, $port, $options = null, $useTLS = true)
+    {
+        if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
+            return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
+        }
+
+        if (PEAR::isError($res = $this->_sock->connect($host, $port, false, 5, $options))) {
+            return $res;
+        }
+
+        if ($this->_bypassAuth) {
+            $this->_state = NET_SIEVE_STATE_TRANSACTION;
+        } else {
+            $this->_state = NET_SIEVE_STATE_AUTHORISATION;
+            if (PEAR::isError($res = $this->_doCmd())) {
+                return $res;
+            }
+        }
+
+        // Explicitly ask for the capabilities in case the connection is
+        // picked up from an existing connection.
+        if (PEAR::isError($res = $this->_cmdCapability())) {
+            return PEAR::raiseError(
+                'Failed to connect, server said: ' . $res->getMessage(), 2
+            );
+        }
+
+        // Check if we can enable TLS via STARTTLS.
+        if ($useTLS && !empty($this->_capability['starttls'])
+            && function_exists('stream_socket_enable_crypto')
+        ) {
+            if (PEAR::isError($res = $this->_startTLS())) {
+                return $res;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Disconnect from the Sieve server.
+     *
+     * @param boolean $sendLogoutCMD Whether to send LOGOUT command before
+     *                               disconnecting.
+     *
+     * @return boolean  True on success, PEAR_Error otherwise.
+     */
+    function disconnect($sendLogoutCMD = true)
+    {
+        return $this->_cmdLogout($sendLogoutCMD);
+    }
+
+    /**
+     * Logs into server.
+     *
+     * @param string  $user       Login username.
+     * @param string  $pass       Login password.
+     * @param string  $logintype  Type of login method to use.
+     * @param string  $euser      Effective UID (perform on behalf of $euser).
+     * @param boolean $bypassAuth Do not perform authentication.
+     *
+     * @return boolean  True on success, PEAR_Error otherwise.
+     */
+    function login($user, $pass, $logintype = null, $euser = '', $bypassAuth = false)
+    {
+        if (NET_SIEVE_STATE_AUTHORISATION != $this->_state) {
+            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
+        }
+
+        if (!$bypassAuth ) {
+            if (PEAR::isError($res = $this->_cmdAuthenticate($user, $pass, $logintype, $euser))) {
+                return $res;
+            }
+        }
+        $this->_state = NET_SIEVE_STATE_TRANSACTION;
+
         return true;
     }
 
@@ -345,90 +459,100 @@ class Net_Sieve
     }
 
     /**
-     * Returns any error that may have been generated in the constructor.
+     * Checks if the server has space to store the script by the server.
      *
-     * @return boolean|PEAR_Error  False if no error, PEAR_Error otherwise.
+     * @param string  $scriptname The name of the script to mark as active.
+     * @param integer $size       The size of the script.
+     *
+     * @return boolean|PEAR_Error  True if there is space, PEAR_Error otherwise.
+     *
+     * @todo Rename to hasSpace()
      */
-    function getError()
+    function haveSpace($scriptname, $size)
     {
-        return PEAR::isError($this->_error) ? $this->_error : false;
-    }
-
-    /**
-     * Handles connecting to the server and checks the response validity.
-     *
-     * @param string  $host    Hostname of server.
-     * @param string  $port    Port of server.
-     * @param array   $options List of options to pass to
-     *                         stream_context_create().
-     * @param boolean $useTLS  Use TLS if available.
-     *
-     * @return boolean  True on success, PEAR_Error otherwise.
-     */
-    function connect($host, $port, $options = null, $useTLS = true)
-    {
-        if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
-            return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
+        if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
+            return PEAR::raiseError('Not currently in TRANSACTION state', 1);
         }
-
-        if (PEAR::isError($res = $this->_sock->connect($host, $port, false, 5, $options))) {
+        if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE "%s" %d', $scriptname, $size)))) {
             return $res;
         }
-
-        if ($this->_bypassAuth) {
-            $this->_state = NET_SIEVE_STATE_TRANSACTION;
-        } else {
-            $this->_state = NET_SIEVE_STATE_AUTHORISATION;
-            if (PEAR::isError($res = $this->_doCmd())) {
-                return $res;
-            }
-        }
-
-        // Explicitly ask for the capabilities in case the connection is
-        // picked up from an existing connection.
-        if (PEAR::isError($res = $this->_cmdCapability())) {
-            return PEAR::raiseError(
-                'Failed to connect, server said: ' . $res->getMessage(), 2
-            );
-        }
-
-        // Check if we can enable TLS via STARTTLS.
-        if ($useTLS && !empty($this->_capability['starttls'])
-            && function_exists('stream_socket_enable_crypto')
-        ) {
-            if (PEAR::isError($res = $this->_startTLS())) {
-                return $res;
-            }
-        }
-
         return true;
     }
 
     /**
-     * Logs into server.
+     * Returns the list of extensions the server supports.
      *
-     * @param string  $user       Login username.
-     * @param string  $pass       Login password.
-     * @param string  $logintype  Type of login method to use.
-     * @param string  $euser      Effective UID (perform on behalf of $euser).
-     * @param boolean $bypassAuth Do not perform authentication.
-     *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return array  List of extensions or PEAR_Error on failure.
      */
-    function login($user, $pass, $logintype = null, $euser = '', $bypassAuth = false)
+    function getExtensions()
     {
-        if (NET_SIEVE_STATE_AUTHORISATION != $this->_state) {
-            return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
+        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
+            return PEAR::raiseError('Not currently connected', 7);
+        }
+        return $this->_capability['extensions'];
+    }
+
+    /**
+     * Returns whether the server supports an extension.
+     *
+     * @param string $extension The extension to check.
+     *
+     * @return boolean  Whether the extension is supported or PEAR_Error on
+     *                  failure.
+     */
+    function hasExtension($extension)
+    {
+        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
+            return PEAR::raiseError('Not currently connected', 7);
         }
 
-        if (!$bypassAuth ) {
-            if (PEAR::isError($res = $this->_cmdAuthenticate($user, $pass, $logintype, $euser))) {
-                return $res;
+        if (is_array($this->_capability['extensions'])) {
+            foreach ($this->_capability['extensions'] as $ext) {
+                if (trim(strtolower($ext)) == trim(strtolower($extension))) {
+                    return true;
+                }
             }
         }
-        $this->_state = NET_SIEVE_STATE_TRANSACTION;
 
-        return true;
+        return false;
+    }
+
+    /**
+     * Returns the list of authentication methods the server supports.
+     *
+     * @return array  List of authentication methods or PEAR_Error on failure.
+     */
+    function getAuthMechs()
+    {
+        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
+            return PEAR::raiseError('Not currently connected', 7);
+        }
+        return $this->_capability['sasl'];
+    }
+
+    /**
+     * Returns whether the server supports an authentication method.
+     *
+     * @param string $method The method to check.
+     *
+     * @return boolean  Whether the method is supported or PEAR_Error on
+     *                  failure.
+     */
+    function hasAuthMech($method)
+    {
+        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
+            return PEAR::raiseError('Not currently connected', 7);
+        }
+
+        if (is_array($this->_capability['sasl'])) {
+            foreach ($this->_capability['sasl'] as $ext) {
+                if (trim(strtolower($ext)) == trim(strtolower($method))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -757,25 +881,6 @@ class Net_Sieve
     }
 
     /**
-     * Checks if the server has space to store the script by the server.
-     *
-     * @param string  $scriptname The name of the script to mark as active.
-     * @param integer $size       The size of the script.
-     *
-     * @return boolean|PEAR_Error  True if there is space, PEAR_Error otherwise.
-     */
-    function haveSpace($scriptname,$size)
-    {
-        if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
-            return PEAR::raiseError('Not currently in TRANSACTION state', 1);
-        }
-        if (PEAR::isError($res = $this->_doCmd(sprintf('HAVESPACE "%s" %d', $scriptname, $size)))) {
-            return $res;
-        }
-        return true;
-    }
-
-    /**
      * Parses the response from the CAPABILITY command and stores the result
      * in $_capability.
      *
@@ -970,33 +1075,6 @@ class Net_Sieve
     }
 
     /**
-     * Sets the debug state and handler function.
-     *
-     * @param boolean $debug   Whether to enable debugging.
-     * @param string  $handler A custom debug handler. Must be a valid callback.
-     *
-     * @return void
-     */
-    function setDebug($debug = true, $handler = null)
-    {
-        $this->_debug = $debug;
-        $this->_debug_handler = $handler;
-    }
-
-    /**
-     * Disconnect from the Sieve server.
-     *
-     * @param boolean $sendLogoutCMD Whether to send LOGOUT command before
-     *                               disconnecting.
-     *
-     * @return boolean  True on success, PEAR_Error otherwise.
-     */
-    function disconnect($sendLogoutCMD = true)
-    {
-        return $this->_cmdLogout($sendLogoutCMD);
-    }
-
-    /**
      * Returns the name of the best authentication method that the server
      * has advertised.
      *
@@ -1037,82 +1115,6 @@ class Net_Sieve
             . ', but we only support: '
             . implode(',', $this->supportedAuthMethods)
         );
-    }
-
-    /**
-     * Returns the list of extensions the server supports.
-     *
-     * @return array  List of extensions or PEAR_Error on failure.
-     */
-    function getExtensions()
-    {
-        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return PEAR::raiseError('Not currently connected', 7);
-        }
-        return $this->_capability['extensions'];
-    }
-
-    /**
-     * Returns whether the server supports an extension.
-     *
-     * @param string $extension The extension to check.
-     *
-     * @return boolean  Whether the extension is supported or PEAR_Error on
-     *                  failure.
-     */
-    function hasExtension($extension)
-    {
-        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return PEAR::raiseError('Not currently connected', 7);
-        }
-
-        if (is_array($this->_capability['extensions'])) {
-            foreach ($this->_capability['extensions'] as $ext) {
-                if (trim(strtolower($ext)) == trim(strtolower($extension))) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the list of authentication methods the server supports.
-     *
-     * @return array  List of authentication methods or PEAR_Error on failure.
-     */
-    function getAuthMechs()
-    {
-        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return PEAR::raiseError('Not currently connected', 7);
-        }
-        return $this->_capability['sasl'];
-    }
-
-    /**
-     * Returns whether the server supports an authentication method.
-     *
-     * @param string $method The method to check.
-     *
-     * @return boolean  Whether the method is supported or PEAR_Error on
-     *                  failure.
-     */
-    function hasAuthMech($method)
-    {
-        if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
-            return PEAR::raiseError('Not currently connected', 7);
-        }
-
-        if (is_array($this->_capability['sasl'])) {
-            foreach ($this->_capability['sasl'] as $ext) {
-                if (trim(strtolower($ext)) == trim(strtolower($method))) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
