@@ -31,17 +31,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2009-10-07</date>
+ <date>2010-04-01</date>
  <version>
-  <release>1.2.0b1</release>
+  <release>1.2.0</release>
   <api>1.2.0</api>
  </version>
  <stability>
-  <release>beta</release>
+  <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
+ <notes>Changes since version 1.2.0b1:
+* Fix DIGEST-MD5 authentication (Aleksander Machniak, Bug #17285).
+Changes since version 1.1.7:
+* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
 * Fix breakage with certain locales, especially Turkish.
 * Fix reading authentication responses without literals (Bug #16647).
 * Code cleanup.</notes>
@@ -86,6 +89,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2009-10-07</date>
+   <version>
+    <release>1.2.0b1</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
+* Fix breakage with certain locales, especially Turkish.
+* Fix reading authentication responses without literals (Bug #16647).
+* Code cleanup.</notes>
+  </release>
   <release>
    <date>2009-07-24</date>
    <version>

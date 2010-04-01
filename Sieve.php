@@ -687,7 +687,7 @@ class Net_Sieve
             return $response;
         }
 
-        if (PEAR::isError($result = $this->_sendStringResponse(base64_encode($param)))) {
+        if (PEAR::isError($result = $this->_sendStringResponse(base64_encode($response)))) {
             return $result;
         }
         if (PEAR::isError($result = $this->_doCmd())) {
