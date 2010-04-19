@@ -41,7 +41,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Fix DIGEST-MD5 authentication with Dovecot/Managesieve (Stef Simoens, Bug #17320).</notes>
+ <notes>* Fix DIGEST-MD5 authentication with Dovecot (Stef Simoens, Bug #17320).</notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
    <dir name="tests">
