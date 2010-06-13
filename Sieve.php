@@ -107,7 +107,7 @@ class Net_Sieve
      *
      * @var array
      */
-    var $_supportedSASLAuthMethods = array('DIGEST-MD5', 'CRAM-MD5');
+    var $supportedSASLAuthMethods = array('DIGEST-MD5', 'CRAM-MD5');
 
     /**
      * The socket handle.
