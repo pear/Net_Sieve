@@ -31,17 +31,17 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2010-06-13</date>
+ <date>2010-12-31</date>
  <version>
-  <release>1.2.2</release>
-  <api>1.2.0</api>
+  <release>1.3.0</release>
+  <api>1.3.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Fix SASL authentication without Auth_SASL (Bug #17489).</notes>
+ <notes>* Add debug handler parameter to constructor.</notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
    <dir name="tests">
@@ -83,6 +83,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2010-06-13</date>
+   <version>
+    <release>1.2.2</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>* Fix SASL authentication without Auth_SASL (Bug #17489).</notes>
+  </release>
   <release>
    <date>2010-04-19</date>
    <version>
