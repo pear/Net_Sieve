@@ -41,7 +41,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Add debug handler parameter to constructor.</notes>
+ <notes>* Add debug handler parameter to constructor.
+* Fix LOGIN authentication (Agustín Eijo, Aleksander Machniak, Bug #17527).</notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
    <dir name="tests">

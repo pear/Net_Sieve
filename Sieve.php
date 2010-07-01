@@ -637,10 +637,10 @@ class Net_Sieve
         if (PEAR::isError($result = $this->_sendCmd('AUTHENTICATE "LOGIN"'))) {
             return $result;
         }
-        if (PEAR::isError($result = $this->_doCmd('"' . base64_encode($user) . '"'))) {
+        if (PEAR::isError($result = $this->_doCmd('"' . base64_encode($user) . '"', true))) {
             return $result;
         }
-        return $this->_doCmd('"' . base64_encode($pass) . '"');
+        return $this->_doCmd('"' . base64_encode($pass) . '"', true);
     }
 
     /**
