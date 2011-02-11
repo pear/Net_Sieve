@@ -31,9 +31,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2010-07-01</date>
+ <date>2011-12-31</date>
  <version>
-  <release>1.3.0</release>
+  <release>1.3.1</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -41,8 +41,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Add debug handler parameter to constructor.
-* Fix LOGIN authentication (Agustín Eijo, Aleksander Machniak, Bug #17527).</notes>
+ <notes>* Work around broken STARTTLS behavior in Cyrus versions before 2.3.10 (Aleksander Machniak, Bug #18241).</notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
    <dir name="tests">
@@ -84,6 +83,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2010-07-01</date>
+   <version>
+    <release>1.3.0</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>* Add debug handler parameter to constructor.
+* Fix LOGIN authentication (Agustín Eijo, Aleksander Machniak, Bug #17527).</notes>
+  </release>
   <release>
    <date>2010-06-13</date>
    <version>
