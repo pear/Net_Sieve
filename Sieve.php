@@ -981,6 +981,25 @@ class Net_Sieve
     }
 
     /**
+     * Receives a number of bytes from the server.
+     *
+     * @param integer $length  Number of bytes to read.
+     *
+     * @return string  The server response.
+     */
+    function _recvBytes($length)
+    {
+        $response = '';
+        $response_length = 0;
+        while ($response_length < $length) {
+            $response .= $this->_sock->read($length - $response_length);
+            $response_length = $this->_getLineLength($response);
+        }
+        $this->_debug('S: ' . rtrim($response));
+        return $response;
+    }
+
+    /**
      * Send a command and retrieves a response from the server.
      *
      * @param string $cmd   The command to send.
@@ -1013,11 +1032,11 @@ class Net_Sieve
 
                 if ('NO' == substr($uc_line, 0, 2)) {
                     // Check for string literal error message.
-                    if (preg_match('/^no {([0-9]+)\+?}/i', $line, $matches)) {
-                        $line .= str_replace(
-                            "\r\n", ' ', $this->_sock->read($matches[1] + 2)
-                        );
-                        $this->_debug("S: $line");
+                    if (preg_match('/{([0-9]+)}$/', $line, $matches)) {
+                        $line = substr($line, 0, -(strlen($matches[1])+2))
+                            . str_replace(
+                                "\r\n", ' ', $this->_recvBytes($matches[1] + 2)
+                            );
                     }
                     return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
@@ -1052,17 +1071,9 @@ class Net_Sieve
                     return PEAR::raiseError(trim($response . $line), 6);
                 }
 
-                if (preg_match('/^{([0-9]+)\+?}/i', $line, $matches)) {
-                    // Matches String Responses.
-                    $str_size = $matches[1] + 2;
-                    $line = '';
-                    $line_length = 0;
-                    while ($line_length < $str_size) {
-                        $line .= $this->_sock->read($str_size - $line_length);
-                        $line_length = $this->_getLineLength($line);
-                    }
-                    $this->_debug("S: $line");
-
+                if (preg_match('/^{([0-9]+)}/', $line, $matches)) {
+                    // Matches literal string responses.
+                    $line = $this->_recvBytes($matches[1] + 2);
                     if (!$auth) {
                         // Receive the pending OK only if we aren't
                         // authenticating since string responses during
