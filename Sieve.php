@@ -763,7 +763,7 @@ class Net_Sieve
             return $res;
         }
 
-        return preg_replace('/{[0-9]+}\r\n/', '', $res);
+        return preg_replace('/^{[0-9]+}\r\n/', '', $res);
     }
 
     /**
