@@ -66,7 +66,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->scripts = array(
             'test script1' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test script2' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
-            'test script3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
+            'test"scriptäöü3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
             'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
 
         // Clear all the scripts in the account.
@@ -180,6 +180,25 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_diff($before_scripts, $after_scripts);
         $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
+        $this->logout();
+    }
+
+    /**
+     * See bug #16691.
+     */
+    public function testInstallNonAsciiScript()
+    {
+        $this->login();
+
+        $scriptname = 'test"scriptäöü3';
+        $before_scripts = $this->fixture->listScripts();
+        $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
+        $this->assertFalse(PEAR::isError($result), 'Can not install script ' . $scriptname);
+        $after_scripts = $this->fixture->listScripts();
+        $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
+        $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
+        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
+
         $this->logout();
     }
 
