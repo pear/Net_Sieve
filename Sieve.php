@@ -602,6 +602,13 @@ class Net_Sieve
             return $res;
         }
 
+        // Query the server capabilities again now that we are authenticated.
+        if (PEAR::isError($res = $this->_cmdCapability())) {
+            return PEAR::raiseError(
+                'Failed to connect, server said: ' . $res->getMessage(), 2
+            );
+        }
+
         return $result;
     }
 
@@ -1173,8 +1180,8 @@ class Net_Sieve
             $this->_doCmd();
         }
 
-        // RFC says we need to query the server capabilities again now that we
-        // are under encryption.
+        // Query the server capabilities again now that we are under
+        // encryption.
         if (PEAR::isError($res = $this->_cmdCapability())) {
             return PEAR::raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
