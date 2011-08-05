@@ -71,9 +71,9 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
         // Clear all the scripts in the account.
         $this->login();
-        $scripts = $this->fixture->listScripts();
+        $scripts = $this->check($this->fixture->listScripts());
         foreach ($scripts as $script) {
-            $this->fixture->removeScript($script);
+            $this->check($this->fixture->removeScript($script));
         }
         $this->logout();
     }
@@ -87,9 +87,9 @@ class SieveTest extends PHPUnit_Framework_TestCase
     protected function login()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertTrue($result, 'Can not connect');
+        $this->assertTrue($this->check($result), 'Can not connect');
         $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
-        $this->assertTrue($result, 'Can not login');
+        $this->assertTrue($this->check($result), 'Can not login');
     }
 
     protected function logout()
@@ -98,18 +98,26 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(PEAR::isError($result), 'Error on disconnect');
     }
 
+    protected function check($result)
+    {
+        if (PEAR::isError($result)) {
+            throw new Exception($result->getMessage());
+        }
+        return $result;
+    }
+
     public function testConnect()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertTrue($result, 'Can not connect');
+        $this->assertTrue($this->check($result), 'Can not connect');
     }
     
     public function testLogin()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertTrue($result, 'Can not connect');
+        $this->assertTrue($this->check($result), 'Can not connect');
         $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
-        $this->assertTrue($result, 'Can not login');
+        $this->assertTrue($this->check($result), 'Can not login');
     }
 
     public function testDisconnect()
