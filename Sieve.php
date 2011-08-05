@@ -85,10 +85,10 @@ define('NET_SIEVE_STATE_TRANSACTION', 3, true);
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Net_Sieve
- * @link      http://www.ietf.org/rfc/rfc3028.txt RFC 3028 (Sieve: A Mail
+ * @link      http://tools.ietf.org/html/rfc5228 RFC 5228 (Sieve: An Email
  *            Filtering Language)
- * @link      http://tools.ietf.org/html/draft-ietf-sieve-managesieve A
- *            Protocol for Remotely Managing Sieve Scripts
+ * @link      http://tools.ietf.org/html/rfc5804 RFC 5804 A Protocol for
+ *            Remotely Managing Sieve Scripts
  */
 class Net_Sieve
 {
@@ -1166,7 +1166,7 @@ class Net_Sieve
         // The server should be sending a CAPABILITY response after
         // negotiating TLS. Read it, and ignore if it doesn't.
         // Unfortunately old Cyrus versions are broken and don't send a
-        // CAPABILITY response, this we would wait here forever. Parse the
+        // CAPABILITY response, thus we would wait here forever. Parse the
         // Cyrus version and work around this broken behavior.
         if (!preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches) ||
             version_compare($matches[1], '2.3.10', '>=')) {
