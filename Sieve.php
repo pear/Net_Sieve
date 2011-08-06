@@ -296,6 +296,13 @@ class Net_Sieve
      */
     function connect($host, $port, $options = null, $useTLS = true)
     {
+        $this->_data['host'] = $host;
+        $this->_data['port'] = $port;
+        $this->_useTLS       = $useTLS;
+        if (is_array($options)) {
+            $this->_options = array_merge($this->_options, $options);
+        }
+
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
             return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
         }
@@ -359,6 +366,12 @@ class Net_Sieve
      */
     function login($user, $pass, $logintype = null, $euser = '', $bypassAuth = false)
     {
+        $this->_data['user']      = $user;
+        $this->_data['pass']      = $pass;
+        $this->_data['logintype'] = $logintype;
+        $this->_data['euser']     = $euser;
+        $this->_bypassAuth        = $bypassAuth;
+
         if (NET_SIEVE_STATE_AUTHORISATION != $this->_state) {
             return PEAR::raiseError('Not currently in AUTHORISATION state', 1);
         }
