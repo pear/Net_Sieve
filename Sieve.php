@@ -163,6 +163,12 @@ class Net_Sieve
     var $_bypassAuth = false;
 
     /**
+     * The timeout for the connection to the SIEVE server.
+     * @var int
+     */
+    var $_timeout = null;
+
+    /**
      * Whether to use TLS if available.
      *
      * @var boolean
@@ -309,7 +315,7 @@ class Net_Sieve
             return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
         }
 
-        $res = $this->_sock->connect($host, $port, false, 5, $options);
+        $res = $this->_sock->connect($host, $port, false, ($this->_timeout?$this->_timeout:10), $options);
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
