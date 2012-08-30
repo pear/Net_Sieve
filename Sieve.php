@@ -166,7 +166,7 @@ class Net_Sieve
      * The timeout for the connection to the SIEVE server.
      * @var int
      */
-    var $_timeout = null;
+    var $_timeout = 5;
 
     /**
      * Whether to use TLS if available.
@@ -315,7 +315,7 @@ class Net_Sieve
             return PEAR::raiseError('Not currently in DISCONNECTED state', 1);
         }
 
-        $res = $this->_sock->connect($host, $port, false, ($this->_timeout?$this->_timeout:10), $options);
+        $res = $this->_sock->connect($host, $port, false, ($this->_timeout?$this->_timeout:5), $options);
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
