@@ -1100,7 +1100,7 @@ class Net_Sieve
                     return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
 
-                if ('BYE' == substr($uc_line, 0, 3)) {
+                if (preg_match('/^BYE/i', $line)) {
                     $error = $this->disconnect(false);
                     if (is_a($error, 'PEAR_Error')) {
                         return PEAR::raiseError(
