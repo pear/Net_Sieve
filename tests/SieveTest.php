@@ -41,7 +41,6 @@
 
 require_once dirname(__FILE__) . '/password.inc.php';
 require_once dirname(__FILE__) . '/../Sieve.php';
-require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
  * PHPUnit test case for Net_Sieve.
