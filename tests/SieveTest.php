@@ -189,8 +189,8 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
         $this->assertFalse(PEAR::isError($result), 'Unable to upload large script (expected behavior for most servers)');
         $after_scripts = $this->fixture->listScripts();
-        $diff_scripts = array_diff($before_scripts, $after_scripts);
-        $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
+        $diff_scripts = array_diff($after_scripts, $before_scripts);
+        $this->assertEquals($scriptname, reset($diff_scripts), 'Added script has a different name');
         $this->logout();
     }
 
