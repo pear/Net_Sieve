@@ -237,11 +237,10 @@ class Net_Sieve
          * it. */
         if ((@include_once 'Auth/SASL.php') === false) {
             $this->_debug('Auth_SASL not present');
-            foreach ($this->supportedSASLAuthMethods as $SASLMethod) {
-                $pos = array_search($SASLMethod, $this->supportedAuthMethods);
-                $this->_debug('Disabling method ' . $SASLMethod);
-                unset($this->supportedAuthMethods[$pos]);
-            }
+            $this->supportedAuthMethods = array_diff(
+                $this->supportedAuthMethods,
+                $this->supportedSASLAuthMethods
+            );
         }
 
         if (strlen($user) && strlen($pass)) {
