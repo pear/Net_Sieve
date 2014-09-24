@@ -97,6 +97,10 @@ class SieveTest extends PHPUnit_Framework_TestCase
     {
         // Clear all the scripts in the account.
         $this->login();
+        $active = $this->fixture->getActive();
+        if (isset($this->scripts[$active])) {
+            $this->fixture->setActive(null);
+        }
         foreach (array_keys($this->scripts) as $script) {
             $this->fixture->removeScript($script);
         }
