@@ -39,7 +39,6 @@
  * @link      http://pear.php.net/package/Net_Sieve
  */
 
-require_once dirname(__FILE__) . '/password.inc.php';
 require_once dirname(__FILE__) . '/../Sieve.php';
 
 /**
@@ -60,6 +59,11 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        if (!file_exists(dirname(__FILE__) . '/config.php')) {
+            $this->markTestSkipped('Test configuration incomplete. Copy config.php.dist to config.php.');
+        }
+        require_once dirname(__FILE__) . '/config.php';
+
         // Create a new instance of Net_Sieve.
         $this->fixture = new Net_Sieve();
         $this->scripts = array(
