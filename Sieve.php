@@ -1082,21 +1082,21 @@ class Net_Sieve
                 if (is_a($line, 'PEAR_Error')) {
                     return $line;
                 }
-                $uc_line = $this->_toUpper($line);
 
-                if ('OK' == substr($uc_line, 0, 2)) {
-                    $response .= $line;
-                    return rtrim($response);
-                }
-
-                if ('NO' == substr($uc_line, 0, 2)) {
-                    // Check for string literal error message.
+                if (preg_match('/^(OK|NO)/i', $line, $tag)) {
+                    // Check for string literal message.
                     if (preg_match('/{([0-9]+)}$/', $line, $matches)) {
-                        $line = substr($line, 0, -(strlen($matches[1])+2))
+                        $line = substr($line, 0, -(strlen($matches[1]) + 2))
                             . str_replace(
                                 "\r\n", ' ', $this->_recvBytes($matches[1] + 2)
                             );
                     }
+
+                    if ('OK' == $this->_toUpper($tag[1])) {
+                        $response .= $line;
+                        return rtrim($response);
+                    }
+
                     return PEAR::raiseError(trim($response . substr($line, 2)), 3);
                 }
 
