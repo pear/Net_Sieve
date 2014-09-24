@@ -65,6 +65,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         require_once dirname(__FILE__) . '/config.php';
 
         // Create a new instance of Net_Sieve.
+        $this->_pear = new PEAR();
         $this->fixture = new Net_Sieve();
         $this->scripts = array(
             'test script1' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
@@ -90,7 +91,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
     protected function logout()
     {
         $result = $this->fixture->disconnect();
-        $this->assertFalse(PEAR::isError($result), 'Error on disconnect');
+        $this->assertFalse($this->_pear->isError($result), 'Error on disconnect');
     }
 
     protected function clear()
@@ -109,7 +110,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     protected function check($result)
     {
-        if (PEAR::isError($result)) {
+        if ($this->_pear->isError($result)) {
             throw new Exception($result->getMessage());
         }
         return $result;
@@ -132,11 +133,11 @@ class SieveTest extends PHPUnit_Framework_TestCase
     public function testDisconnect()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertFalse(PEAR::isError($result), 'Cannot connect');
+        $this->assertFalse($this->_pear->isError($result), 'Cannot connect');
         $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
-        $this->assertFalse(PEAR::isError($result), 'Cannot login');
+        $this->assertFalse($this->_pear->isError($result), 'Cannot login');
         $result = $this->fixture->disconnect();
-        $this->assertFalse(PEAR::isError($result), 'Error on disconnect');
+        $this->assertFalse($this->_pear->isError($result), 'Error on disconnect');
     }
 
     public function testListScripts()
@@ -144,7 +145,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->login();
         $scripts = $this->fixture->listScripts();
         $this->logout();
-        $this->assertFalse(PEAR::isError($scripts), 'Can not list scripts');
+        $this->assertFalse($this->_pear->isError($scripts), 'Can not list scripts');
     }
 
     public function testInstallScript()
@@ -156,7 +157,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $scriptname = 'test script1';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
-        $this->assertFalse(PEAR::isError($result), 'Can not install script ' . $scriptname);
+        $this->assertFalse($this->_pear->isError($result), 'Can not install script ' . $scriptname);
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
@@ -166,7 +167,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $scriptname = 'test script2';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname], true);
-        $this->assertFalse(PEAR::isError($result), 'Can not install script ' . $scriptname);
+        $this->assertFalse($this->_pear->isError($result), 'Can not install script ' . $scriptname);
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
@@ -187,7 +188,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $scriptname = 'test script4';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
-        $this->assertFalse(PEAR::isError($result), 'Unable to upload large script (expected behavior for most servers)');
+        $this->assertFalse($this->_pear->isError($result), 'Unable to upload large script (expected behavior for most servers)');
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_diff($after_scripts, $before_scripts);
         $this->assertEquals($scriptname, reset($diff_scripts), 'Added script has a different name');
@@ -205,7 +206,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $scriptname = 'test"scriptäöü3';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
-        $this->assertFalse(PEAR::isError($result), 'Can not install script ' . $scriptname);
+        $this->assertFalse($this->_pear->isError($result), 'Can not install script ' . $scriptname);
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0, 'Script not installed');
@@ -221,7 +222,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $scriptname = 'test script1';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
-        $this->assertFalse(PEAR::isError($result), 'Can not install script ' . $scriptname);
+        $this->assertFalse($this->_pear->isError($result), 'Can not install script ' . $scriptname);
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_values(array_diff($after_scripts, $before_scripts));
         $this->assertTrue(count($diff_scripts) > 0);
@@ -236,7 +237,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->clear();
         $this->login();
         $active_script = $this->fixture->getActive();
-        $this->assertFalse(PEAR::isError($active_script), 'Error getting the active script');
+        $this->assertFalse($this->_pear->isError($active_script), 'Error getting the active script');
         $this->logout();
     }
 
@@ -247,13 +248,13 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->login();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
         $result = $this->fixture->setActive($scriptname);
-        $this->assertFalse(PEAR::isError($result), 'Can not set active script');
+        $this->assertFalse($this->_pear->isError($result), 'Can not set active script');
         $active_script = $this->fixture->getActive();
         $this->assertEquals($scriptname, $active_script, 'Active script does not match');
 
         // Test for non-existant script.
         $result = $this->fixture->setActive('non existant script');
-        $this->assertTrue(PEAR::isError($result));
+        $this->assertTrue($this->_pear->isError($result));
         $this->logout();
     }
 
@@ -264,7 +265,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->login();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
         $result = $this->fixture->removeScript($scriptname);
-        $this->assertFalse(PEAR::isError($result), 'Error removing active script');
+        $this->assertFalse($this->_pear->isError($result), 'Error removing active script');
         $this->logout();
     }
 }

@@ -41,7 +41,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Fix reading OK responses with string literal messages.
+ <notes>* Fix notices from non-static calling of PEAR methods.
+* Fix reading OK responses with string literal messages.
 </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
