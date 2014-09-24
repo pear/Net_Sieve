@@ -67,14 +67,6 @@ class SieveTest extends PHPUnit_Framework_TestCase
             'test script2' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test"scriptäöü3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
             'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
-
-        // Clear all the scripts in the account.
-        $this->login();
-        $scripts = $this->check($this->fixture->listScripts());
-        foreach ($scripts as $script) {
-            $this->check($this->fixture->removeScript($script));
-        }
-        $this->logout();
     }
     
     protected function tearDown()
@@ -97,6 +89,16 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(PEAR::isError($result), 'Error on disconnect');
     }
 
+    protected function clear()
+    {
+        // Clear all the scripts in the account.
+        $this->login();
+        foreach (array_keys($this->scripts) as $script) {
+            $this->fixture->removeScript($script);
+        }
+        $this->logout();
+    }
+
     protected function check($result)
     {
         if (PEAR::isError($result)) {
@@ -108,23 +110,23 @@ class SieveTest extends PHPUnit_Framework_TestCase
     public function testConnect()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertTrue($this->check($result), 'Can not connect');
+        $this->assertTrue($this->check($result), 'Cannot connect');
     }
     
     public function testLogin()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertTrue($this->check($result), 'Can not connect');
+        $this->assertTrue($this->check($result), 'Cannot connect');
         $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
-        $this->assertTrue($this->check($result), 'Can not login');
+        $this->assertTrue($this->check($result), 'Cannot login');
     }
 
     public function testDisconnect()
     {
         $result = $this->fixture->connect(HOST, PORT);
-        $this->assertFalse(PEAR::isError($result), 'Can not connect');
+        $this->assertFalse(PEAR::isError($result), 'Cannot connect');
         $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
-        $this->assertFalse(PEAR::isError($result), 'Can not login');
+        $this->assertFalse(PEAR::isError($result), 'Cannot login');
         $result = $this->fixture->disconnect();
         $this->assertFalse(PEAR::isError($result), 'Error on disconnect');
     }
@@ -139,6 +141,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     public function testInstallScript()
     {
+        $this->clear();
         $this->login();
 
         // First script.
@@ -171,6 +174,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
      */
     public function testInstallScriptLarge()
     {
+        $this->clear();
         $this->login();
         $scriptname = 'test script4';
         $before_scripts = $this->fixture->listScripts();
@@ -187,6 +191,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
      */
     public function testInstallNonAsciiScript()
     {
+        $this->clear();
         $this->login();
 
         $scriptname = 'test"scriptäöü3';
@@ -203,6 +208,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     public function testGetScript()
     {
+        $this->clear();
         $this->login();
         $scriptname = 'test script1';
         $before_scripts = $this->fixture->listScripts();
@@ -219,6 +225,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     public function testGetActive()
     {
+        $this->clear();
         $this->login();
         $active_script = $this->fixture->getActive();
         $this->assertFalse(PEAR::isError($active_script), 'Error getting the active script');
@@ -227,6 +234,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     public function testSetActive()
     {
+        $this->clear();
         $scriptname = 'test script1';
         $this->login();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
@@ -243,6 +251,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveScript()
     {
+        $this->clear();
         $scriptname = 'test script1';
         $this->login();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
