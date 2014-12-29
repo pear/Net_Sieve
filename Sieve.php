@@ -662,7 +662,7 @@ class Net_Sieve
      *
      * @param string $user  The userid to authenticate as.
      * @param string $pass  The password to authenticate with.
-     * @param string $euser The effective uid to authenticate as.
+     * @param string $euser The effective uid to authenticate as. Not used.
      *
      * @return void
      */
@@ -684,7 +684,7 @@ class Net_Sieve
      *
      * @param string $user  The userid to authenticate as.
      * @param string $pass  The password to authenticate with.
-     * @param string $euser The effective uid to authenticate as.
+     * @param string $euser The effective uid to authenticate as. Not used.
      *
      * @return void
      */
