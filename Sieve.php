@@ -408,7 +408,6 @@ class Net_Sieve
     function listScripts()
     {
         if (is_array($scripts = $this->_cmdListScripts())) {
-            $this->_active = $scripts[1];
             return $scripts[0];
         } else {
             return $scripts;
@@ -422,11 +421,7 @@ class Net_Sieve
      */
     function getActive()
     {
-        if (!empty($this->_active)) {
-            return $this->_active;
-        }
         if (is_array($scripts = $this->_cmdListScripts())) {
-            $this->_active = $scripts[1];
             return $scripts[1];
         }
     }
@@ -836,7 +831,6 @@ class Net_Sieve
             return $res;
         }
 
-        $this->_activeScript = $scriptname;
         return true;
     }
 
