@@ -41,7 +41,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* 
+ <notes>* Dropped PHP4 support, fixed PHP7 warnings
 </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
@@ -58,7 +58,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>5.0.0</min>
    </php>
    <pearinstaller>
     <min>1.4.0b1</min>
