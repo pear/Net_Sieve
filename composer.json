@@ -26,12 +26,12 @@
             "./"
         ]
     },
-    "description": "More info available on: http://pear.php.net/package/Net_Sieve",
+    "description": "This if a fork of http://pear.php.net/package/Net_Sieve",
     "license": "BSD",
-    "name": "pear/net_sieve",
+    "name": "roundcube/net_sieve",
     "support": {
         "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Net_Sieve",
-        "source": "https://github.com/pear/Net_Sieve"
+        "source": "https://github.com/roundcube/Net_Sieve"
     },
     "type": "library",
     "require": {
