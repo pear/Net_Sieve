@@ -31,17 +31,17 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2015-01-20</date>
+ <date>2015-08-02</date>
  <version>
-  <release>1.3.5</release>
-  <api>1.3.0</api>
+  <release>1.5.0</release>
+  <api>1.5.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* 
+ <notes>* Dropped PHP4 support, fixed PHP7 warnings
 </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
@@ -58,7 +58,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>5.0.0</min>
    </php>
    <pearinstaller>
     <min>1.4.0b1</min>

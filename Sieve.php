@@ -2,7 +2,7 @@
 /**
  * This file contains the Net_Sieve class.
  *
- * PHP version 4
+ * PHP version 5
  *
  * +-----------------------------------------------------------------------+
  * | All rights reserved.                                                  |
@@ -39,7 +39,6 @@
  * @copyright 2002-2003 Richard Heyes
  * @copyright 2006-2008 Anish Mistry
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Net_Sieve
  */
 
@@ -99,8 +98,13 @@ class Net_Sieve
      *
      * @var array
      */
-    var $supportedAuthMethods = array('DIGEST-MD5', 'CRAM-MD5', 'EXTERNAL',
-                                      'PLAIN' , 'LOGIN');
+    var $supportedAuthMethods = array(
+        'DIGEST-MD5',
+        'CRAM-MD5',
+        'EXTERNAL',
+        'PLAIN' ,
+        'LOGIN'
+    );
 
     /**
      * SASL authentication methods that require Auth_SASL.
@@ -213,11 +217,11 @@ class Net_Sieve
      *                            stream_context_create().
      * @param mixed   $handler    A callback handler for the debug output.
      */
-    function Net_Sieve($user = null, $pass  = null, $host = 'localhost',
-                       $port = 2000, $logintype = '', $euser = '',
-                       $debug = false, $bypassAuth = false, $useTLS = true,
-                       $options = null, $handler = null)
-    {
+    function __construct($user = null, $pass  = null, $host = 'localhost',
+        $port = 2000, $logintype = '', $euser = '',
+        $debug = false, $bypassAuth = false, $useTLS = true,
+        $options = null, $handler = null
+    ) {
         $this->_pear = new PEAR();
         $this->_state             = NET_SIEVE_STATE_DISCONNECTED;
         $this->_data['user']      = $user;
@@ -500,7 +504,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd(sprintf('HAVESPACE %s %d', $this->_escape($scriptname), $size));
-        if (is_a($res, 'PEAR_Error')) {        
+        if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
         return true;
@@ -883,10 +887,13 @@ class Net_Sieve
         }
 
         $stringLength = $this->_getLineLength($scriptdata);
-        $command      = sprintf("PUTSCRIPT %s {%d+}\r\n%s",
-                                $this->_escape($scriptname),
-                                $stringLength,
-                                $scriptdata);
+        $command      = sprintf(
+            "PUTSCRIPT %s {%d+}\r\n%s",
+            $this->_escape($scriptname),
+            $stringLength,
+            $scriptdata
+        );
+
         $res = $this->_doCmd($command);
         if (is_a($res, 'PEAR_Error')) {
             return $res;
@@ -1041,9 +1048,9 @@ class Net_Sieve
     /**
      * Receives a number of bytes from the server.
      *
-     * @param integer $length  Number of bytes to read.
+     * @param integer $length Number of bytes to read.
      *
-     * @return string  The server response.
+     * @return string The server response.
      */
     function _recvBytes($length)
     {
@@ -1060,11 +1067,11 @@ class Net_Sieve
     /**
      * Send a command and retrieves a response from the server.
      *
-     * @param string $cmd   The command to send.
+     * @param string  $cmd  The command to send.
      * @param boolean $auth Whether this is an authentication command.
      *
-     * @return string|PEAR_Error  Reponse string if an OK response, PEAR_Error
-     *                            if a NO response.
+     * @return string|PEAR_Error Reponse string if an OK response, PEAR_Error
+     *                           if a NO response.
      */
     function _doCmd($cmd = '', $auth = false)
     {
@@ -1182,10 +1189,11 @@ class Net_Sieve
             if (in_array($userMethod, $this->_capability['sasl'])) {
                 return $userMethod;
             }
+
+            $msg = 'No supported authentication method found. The server supports these methods: %s, but we want to use: %s';
             return $this->_pear->raiseError(
-                sprintf('No supported authentication method found. The server supports these methods: %s, but we want to use: %s',
-                        implode(', ', $this->_capability['sasl']),
-                        $userMethod));
+                sprintf($msg, implode(', ', $this->_capability['sasl']), $userMethod)
+            );
         }
 
         foreach ($this->supportedAuthMethods as $method) {
@@ -1194,10 +1202,10 @@ class Net_Sieve
             }
         }
 
+        $msg = 'No supported authentication method found. The server supports these methods: %s, but we only support: %s';
         return $this->_pear->raiseError(
-            sprintf('No supported authentication method found. The server supports these methods: %s, but we only support: %s',
-                    implode(', ', $this->_capability['sasl']),
-                    implode(', ', $this->supportedAuthMethods)));
+            sprintf($msg, implode(', ', $this->_capability['sasl']), implode(', ', $this->supportedAuthMethods))
+        );
     }
 
     /**
@@ -1223,8 +1231,9 @@ class Net_Sieve
         // Unfortunately old Cyrus versions are broken and don't send a
         // CAPABILITY response, thus we would wait here forever. Parse the
         // Cyrus version and work around this broken behavior.
-        if (!preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches) ||
-            version_compare($matches[1], '2.3.10', '>=')) {
+        if (!preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches)
+            || version_compare($matches[1], '2.3.10', '>=')
+        ) {
             $this->_doCmd();
         }
 
@@ -1275,9 +1284,9 @@ class Net_Sieve
     /**
      * Converts strings into RFC's quoted-string or literal-c2s form.
      *
-     * @param string $string  The string to convert.
+     * @param string $string The string to convert.
      *
-     * @return string  Result string.
+     * @return string Result string.
      */
     function _escape($string)
     {
