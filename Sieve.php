@@ -309,7 +309,11 @@ class Net_Sieve
         $this->_data['port'] = $port;
         $this->_useTLS       = $useTLS;
         if (is_array($options)) {
-            $this->_options = array_merge($this->_options, $options);
+            if (is_array($this->_options)) {
+                $this->_options = array_merge($this->_options, $options);
+            } else {
+                $this->_options = $options;
+            }
         }
 
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
