@@ -1220,7 +1220,18 @@ class Net_Sieve
             return $res;
         }
 
-        if (!stream_socket_enable_crypto($this->_sock->fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+        if (isset($this->_options['ssl']['crypto_method'])) {
+            $crypto_method = $this->_options['ssl']['crypto_method'];
+        }
+        else {
+            // There is no flag to enable all TLS methods. Net_SMTP
+            // handles enabling TLS similarly.
+            $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT
+                | @STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT
+                | @STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+        }
+
+        if (!stream_socket_enable_crypto($this->_sock->fp, true, $crypto_method)) {
             return $this->_pear->raiseError('Failed to establish TLS connection', 2);
         }
 
