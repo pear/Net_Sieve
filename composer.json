@@ -34,14 +34,23 @@
         "source": "https://github.com/roundcube/Net_Sieve"
     },
     "type": "library",
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "https://pear.php.net/"
+        }
+    ],
     "require": {
         "pear/pear-core-minimal": "*",
-        "pear/net_socket": "*"
+        "pear-pear.php.net/net_socket": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
     },
     "suggest": {
         "pear/auth_sasl": "Install optionally via your project's composer.json"
+    },
+     "config": {
+        "secure-http": false
     }
 }
