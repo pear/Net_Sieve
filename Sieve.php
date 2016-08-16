@@ -699,9 +699,11 @@ class Net_Sieve
             return $challenge;
         }
 
+        $auth_sasl = new Auth_SASL;
+        $cram      = $auth_sasl->factory('crammd5');
         $challenge = base64_decode(trim($challenge));
-        $cram = Auth_SASL::factory('crammd5');
-        $response = $cram->getResponse($user, $pass, $challenge);
+        $response  = $cram->getResponse($user, $pass, $challenge);
+
         if (is_a($response, 'PEAR_Error')) {
             return $response;
         }
@@ -725,8 +727,10 @@ class Net_Sieve
             return $challenge;
         }
 
+        $auth_sasl = new Auth_SASL;
+        $digest    = $auth_sasl->factory('digestmd5');
         $challenge = base64_decode(trim($challenge));
-        $digest = Auth_SASL::factory('digestmd5');
+
         // @todo Really 'localhost'?
         $response = $digest->getResponse($user, $pass, $challenge, 'localhost', 'sieve', $euser);
         if (is_a($response, 'PEAR_Error')) {
