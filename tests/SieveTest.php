@@ -68,8 +68,8 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->_pear = new PEAR();
         $this->fixture = new Net_Sieve();
         $this->scripts = array(
-            'test script1' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
-            'test script2' => "require \"fileinto\";\n\rif header :contains \"From\" \"@cnba.uba.ar\" \n\r{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
+            'test script1' => "require \"fileinto\";\r\nif header :contains \"From\" \"@cnba.uba.ar\" \r\n{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
+            'test script2' => "require \"fileinto\";\r\nif header :contains \"From\" \"@cnba.uba.ar\" \r\n{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test"scriptäöü3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
             'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
     }
@@ -228,7 +228,7 @@ class SieveTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(count($diff_scripts) > 0);
         $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $script = $this->fixture->getScript($scriptname);
-        $this->assertEquals(trim($this->scripts[$scriptname]), trim($script), 'Script installed it not the same script retrieved');
+        $this->assertEquals(trim($this->scripts[$scriptname]), trim($script), 'Script installed is not the same script retrieved');
         $this->logout();
     }
 
