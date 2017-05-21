@@ -2,7 +2,7 @@
 /**
  * This file contains the PHPUnit test case for Net_Sieve.
  *
- * PHP version 4
+ * PHP version 5
  *
  * +-----------------------------------------------------------------------+
  * | All rights reserved.                                                  |
