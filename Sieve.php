@@ -233,7 +233,7 @@ class Net_Sieve
         $this->_sock              = new Net_Socket();
         $this->_bypassAuth        = $bypassAuth;
         $this->_useTLS            = $useTLS;
-        $this->_options           = $options;
+        $this->_options           = (array) $options;
         $this->setDebug($debug, $handler);
 
         /* Try to include the Auth_SASL package.  If the package is not
@@ -312,12 +312,9 @@ class Net_Sieve
         $this->_data['host'] = $host;
         $this->_data['port'] = $port;
         $this->_useTLS       = $useTLS;
+
         if (is_array($options)) {
-            if (is_array($this->_options)) {
-                $this->_options = array_merge($this->_options, $options);
-            } else {
-                $this->_options = $options;
-            }
+            $this->_options = array_merge($this->_options, $options);
         }
 
         if (NET_SIEVE_STATE_DISCONNECTED != $this->_state) {
@@ -703,9 +700,11 @@ class Net_Sieve
             return $challenge;
         }
 
+        $auth_sasl = new Auth_SASL;
+        $cram      = $auth_sasl->factory('crammd5');
         $challenge = base64_decode(trim($challenge));
-        $cram = Auth_SASL::factory('crammd5');
-        $response = $cram->getResponse($user, $pass, $challenge);
+        $response  = $cram->getResponse($user, $pass, $challenge);
+
         if (is_a($response, 'PEAR_Error')) {
             return $response;
         }
@@ -729,8 +728,10 @@ class Net_Sieve
             return $challenge;
         }
 
+        $auth_sasl = new Auth_SASL;
+        $digest    = $auth_sasl->factory('digestmd5');
         $challenge = base64_decode(trim($challenge));
-        $digest = Auth_SASL::factory('digestmd5');
+
         // @todo Really 'localhost'?
         $response = $digest->getResponse($user, $pass, $challenge, 'localhost', 'sieve', $euser);
         if (is_a($response, 'PEAR_Error')) {
@@ -1224,7 +1225,18 @@ class Net_Sieve
             return $res;
         }
 
-        if (!stream_socket_enable_crypto($this->_sock->fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+        if (isset($this->_options['ssl']['crypto_method'])) {
+            $crypto_method = $this->_options['ssl']['crypto_method'];
+        }
+        else {
+            // There is no flag to enable all TLS methods. Net_SMTP
+            // handles enabling TLS similarly.
+            $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT
+                | @STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT
+                | @STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+        }
+
+        if (!stream_socket_enable_crypto($this->_sock->fp, true, $crypto_method)) {
             return $this->_pear->raiseError('Failed to establish TLS connection', 2);
         }
 
