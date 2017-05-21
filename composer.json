@@ -35,11 +35,11 @@
     },
     "type": "library",
     "require": {
-        "pear/pear": "*",
+        "pear/pear-core-minimal": "*",
         "pear/net_socket": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "~5.7.15"
     },
     "suggest": {
         "pear/auth_sasl": "Install optionally via your project's composer.json"
