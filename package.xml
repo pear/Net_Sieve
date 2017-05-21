@@ -8,10 +8,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <summary>Handles talking to a sieve server.</summary>
  <description>This package provides an API to talk to servers implementing the managesieve protocol. It can be used to install and remove sieve scripts, mark them active etc.</description>
  <lead>
+  <name>Aleksander Machniak</name>
+  <user>alec</user>
+  <email>alec@alec.pl</email>
+  <active>yes</active>
+ </lead>
+ <lead>
   <name>Jan Schneider</name>
   <user>yunosh</user>
   <email>jan@horde.org</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
  <lead>
   <name>Richard Heyes</name>
@@ -31,17 +37,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2015-01-20</date>
+ <date>2017-05-21</date>
  <version>
-  <release>1.3.5</release>
-  <api>1.3.0</api>
+  <release>1.4.0</release>
+  <api>1.4.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
- <notes>* Dropped PHP4 support, fixed PHP7 warnings
+ <notes>
+* Dropped PHP4 support, fixed PHP7 warnings
+* Fixed E_DEPRECATED warning on Auth_SASL::factory() call
+* Enable later TLS versions
 </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
