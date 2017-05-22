@@ -328,21 +328,29 @@ class Net_Sieve
 
         if ($this->_bypassAuth) {
             $this->_state = NET_SIEVE_STATE_TRANSACTION;
+
+            // Reset capabilities
+            $this->_parseCapability('');
         } else {
             $this->_state = NET_SIEVE_STATE_AUTHORISATION;
+
             $res = $this->_doCmd();
             if (is_a($res, 'PEAR_Error')) {
                 return $res;
             }
+
+            // Reset capabilities (use unattended capabilities)
+            $this->_parseCapability($res);
         }
 
-        // Explicitly ask for the capabilities in case the connection is
-        // picked up from an existing connection.
-        $res = $this->_cmdCapability();
-        if (is_a($res, 'PEAR_Error')) {
-            return $this->_pear->raiseError(
-                'Failed to connect, server said: ' . $res->getMessage(), 2
-            );
+        // Explicitly ask for the capabilities if needed
+        if (empty($this->_capability['implementation'])) {
+            $res = $this->_cmdCapability();
+            if (is_a($res, 'PEAR_Error')) {
+                return $this->_pear->raiseError(
+                    'Failed to connect, server said: ' . $res->getMessage(), 2
+                );
+            }
         }
 
         // Check if we can enable TLS via STARTTLS.
@@ -633,7 +641,6 @@ class Net_Sieve
             return $res;
         }
 
-        // Query the server capabilities again now that we are authenticated.
         if ($this->_pear->isError($res = $this->_cmdCapability())) {
             return $this->_pear->raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
@@ -978,11 +985,15 @@ class Net_Sieve
                 break;
 
             case 'SASL':
-                $this->_capability['sasl'] = preg_split('/\s+/', $matches[3]);
+                if (!empty($matches[3])) {
+                    $this->_capability['sasl'] = preg_split('/\s+/', $matches[3]);
+                }
                 break;
 
             case 'SIEVE':
-                $this->_capability['extensions'] = preg_split('/\s+/', $matches[3]);
+                if (!empty($matches[3])) {
+                    $this->_capability['extensions'] = preg_split('/\s+/', $matches[3]);
+                }
                 break;
 
             case 'STARTTLS':
@@ -1250,16 +1261,20 @@ class Net_Sieve
         if (!preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches)
             || version_compare($matches[1], '2.3.10', '>=')
         ) {
-            $this->_doCmd();
+            $res = $this->_doCmd();
         }
 
-        // Query the server capabilities again now that we are under
-        // encryption.
-        $res = $this->_cmdCapability();
-        if (is_a($res, 'PEAR_Error')) {
-            return $this->_pear->raiseError(
-                'Failed to connect, server said: ' . $res->getMessage(), 2
-            );
+        // Reset capabilities (use unattended capabilities)
+        $this->_parseCapability(is_string($res) ? $res : '');
+
+        // Query the server capabilities again now that we are under encryption.
+        if (empty($this->_capability['implementation'])) {
+            $res = $this->_cmdCapability();
+            if (is_a($res, 'PEAR_Error')) {
+                return $this->_pear->raiseError(
+                    'Failed to connect, server said: ' . $res->getMessage(), 2
+                );
+            }
         }
 
         return true;
