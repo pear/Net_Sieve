@@ -1292,7 +1292,7 @@ class Net_Sieve
     function _getLineLength($string)
     {
         if (extension_loaded('mbstring')) {
-            return mb_strlen($string, 'latin1');
+            return mb_strlen($string, '8bit');
         } else {
             return strlen($string);
         }
