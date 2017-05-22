@@ -413,15 +413,21 @@ class Net_Sieve
     /**
      * Returns an indexed array of scripts currently on the server.
      *
-     * @return array  Indexed array of scriptnames.
+     * @param string $active Will be set to the name of the active script
+     *
+     * @return array  Indexed array of scriptnames, PEAR_Error on failure
      */
-    function listScripts()
+    function listScripts(&$active = null)
     {
         if (is_array($scripts = $this->_cmdListScripts())) {
+            if (isset($scripts[1])) {
+                $active = $scripts[1];
+            }
+
             return $scripts[0];
-        } else {
-            return $scripts;
         }
+
+        return $scripts;
     }
 
     /**
