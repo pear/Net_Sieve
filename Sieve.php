@@ -46,25 +46,22 @@ require_once 'PEAR.php';
 require_once 'Net/Socket.php';
 
 /**
- * TODO
- *
- * o supportsAuthMech()
- */
-
-/**
  * Disconnected state
+ *
  * @const NET_SIEVE_STATE_DISCONNECTED
  */
 define('NET_SIEVE_STATE_DISCONNECTED', 1, true);
 
 /**
  * Authorisation state
+ *
  * @const NET_SIEVE_STATE_AUTHORISATION
  */
 define('NET_SIEVE_STATE_AUTHORISATION', 2, true);
 
 /**
  * Transaction state
+ *
  * @const NET_SIEVE_STATE_TRANSACTION
  */
 define('NET_SIEVE_STATE_TRANSACTION', 3, true);
@@ -776,7 +773,7 @@ class Net_Sieve
      *
      * @return void
      *
-     * @since  1.1.7
+     * @since 1.1.7
      */
     function _authEXTERNAL($user, $pass, $euser)
     {
@@ -1238,8 +1235,7 @@ class Net_Sieve
 
         if (isset($this->_options['ssl']['crypto_method'])) {
             $crypto_method = $this->_options['ssl']['crypto_method'];
-        }
-        else {
+        } else {
             // There is no flag to enable all TLS methods. Net_SMTP
             // handles enabling TLS similarly.
             $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT
