@@ -405,6 +405,7 @@ class Net_Sieve
                 return $res;
             }
         }
+
         $this->_state = NET_SIEVE_STATE_TRANSACTION;
 
         return true;
@@ -481,9 +482,11 @@ class Net_Sieve
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
+
         if ($makeactive) {
             return $this->_cmdSetActive($scriptname);
         }
+
         return true;
     }
 
@@ -519,6 +522,7 @@ class Net_Sieve
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
+
         return true;
     }
 
@@ -532,6 +536,7 @@ class Net_Sieve
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
             return $this->_pear->raiseError('Not currently connected', 7);
         }
+
         return $this->_capability['extensions'];
     }
 
@@ -571,6 +576,7 @@ class Net_Sieve
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
             return $this->_pear->raiseError('Not currently connected', 7);
         }
+
         return $this->_capability['sasl'];
     }
 
@@ -589,6 +595,7 @@ class Net_Sieve
         }
 
         $method = trim($this->_toUpper($method));
+
         if (is_array($this->_capability['sasl'])) {
             foreach ($this->_capability['sasl'] as $sasl) {
                 if ($sasl == $method) {
@@ -617,6 +624,7 @@ class Net_Sieve
         if (is_a($method, 'PEAR_Error')) {
             return $method;
         }
+
         switch ($method) {
         case 'DIGEST-MD5':
             return $this->_authDigestMD5($uid, $pwd, $euser);
@@ -687,10 +695,12 @@ class Net_Sieve
         if (is_a($result, 'PEAR_Error')) {
             return $result;
         }
+
         $result = $this->_doCmd('"' . base64_encode($user) . '"', true);
         if (is_a($result, 'PEAR_Error')) {
             return $result;
         }
+
         return $this->_doCmd('"' . base64_encode($pass) . '"', true);
     }
 
@@ -752,10 +762,12 @@ class Net_Sieve
         if (is_a($result, 'PEAR_Error')) {
             return $result;
         }
+
         $result = $this->_doCmd('', true);
         if (is_a($result, 'PEAR_Error')) {
             return $result;
         }
+
         if ($this->_toUpper(substr($result, 0, 2)) == 'OK') {
             return;
         }
@@ -787,6 +799,7 @@ class Net_Sieve
             'AUTHENTICATE "EXTERNAL" "%s"',
             base64_encode(strlen($euser) ? $euser : $user)
         );
+
         return $this->_sendCmd($cmd);
     }
 
@@ -807,6 +820,7 @@ class Net_Sieve
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
+
         return true;
     }
 
