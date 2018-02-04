@@ -27,7 +27,7 @@
         ]
     },
     "description": "More info available on: http://pear.php.net/package/Net_Sieve",
-    "license": "BSD",
+    "license": "BSD-2-Clause",
     "name": "pear/net_sieve",
     "support": {
         "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Net_Sieve",
@@ -35,8 +35,8 @@
     },
     "type": "library",
     "require": {
-        "pear/pear-core-minimal": "*",
-        "pear/net_socket": "*"
+        "pear/pear-core-minimal": "~1.10",
+        "pear/net_socket": "~1.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.7.15"
