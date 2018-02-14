@@ -37,9 +37,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2017-05-26</date>
+ <date>2018-02-14</date>
  <version>
-  <release>1.4.1</release>
+  <release>1.4.2</release>
   <api>1.4.0</api>
  </version>
  <stability>
@@ -48,9 +48,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Use 8bit instead of latin1 for string length in bytes calculation
-* Extend listScripts() so it's possible to get an active script name in one go
-* Request #20491: Skip redundant CAPABILITY requests
+* Composer: Fix license identifier, don't use unbound version numbers for deps
  </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
@@ -88,6 +86,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2017-05-26</date>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+* Use 8bit instead of latin1 for string length in bytes calculation
+* Extend listScripts() so it's possible to get an active script name in one go
+* Request #20491: Skip redundant CAPABILITY requests
+   </notes>
+  </release>
   <release>
    <date>2017-05-21</date>
    <version>
@@ -378,8 +393,8 @@ Changes since version 1.1.7:
    </stability>
    <date>2004-03-13</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
-   <notes>* Fixed BUG #1006
-
+   <notes>
+* Fixed BUG #1006
    </notes>
   </release>
   <release>
@@ -395,7 +410,6 @@ Changes since version 1.1.7:
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed DIGEST-MD5 sasl version handling (sasl v1.xx responses are diferent than v2.xx)
 * Fixed LOGIN Method
-
    </notes>
   </release>
   <release>
@@ -427,7 +441,6 @@ it affects you or disable DIGEST-MD5
 * _login --&gt; login: now is a public method (without breaking BC)
 * fix typo  cmdAuthenticate() ---&gt;  _cmdAuthenticate()
 * _doCmd() now parses string responses also.
-
    </notes>
   </release>
   <release>
@@ -446,7 +459,6 @@ it affects you or disable DIGEST-MD5
 * added sample file test_sieve.php
 * fixed bug #591
 * automagically selects the best auth method
-
    </notes>
   </release>
   <release>
