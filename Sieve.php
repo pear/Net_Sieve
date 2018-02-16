@@ -103,7 +103,8 @@ class Net_Sieve
         'CRAM-MD5',
         'EXTERNAL',
         'PLAIN' ,
-        'LOGIN'
+        'LOGIN',
+	'GSSAPI'
     );
 
     /**
@@ -195,6 +196,13 @@ class Net_Sieve
     var $_maxReferralCount = 15;
 
     /**
+     * Kerberos service principal to use for GSSAPI authentication.
+     *
+     * @var string
+     */
+    var $_servicePrincipal = null;
+
+    /**
      * Constructor.
      *
      * Sets up the object, connects to the server and logs in. Stores any
@@ -216,11 +224,14 @@ class Net_Sieve
      * @param array   $options    Additional options for
      *                            stream_context_create().
      * @param mixed   $handler    A callback handler for the debug output.
+     * @param string  $servicePrincipal Kerberos service principal to use
+     *                            with GSSAPI authentication.
      */
     function __construct($user = null, $pass  = null, $host = 'localhost',
         $port = 2000, $logintype = '', $euser = '',
         $debug = false, $bypassAuth = false, $useTLS = true,
-        $options = null, $handler = null
+        $options = null, $handler = null,
+	$servicePrincipal
     ) {
         $this->_pear = new PEAR();
         $this->_state             = NET_SIEVE_STATE_DISCONNECTED;
@@ -234,6 +245,7 @@ class Net_Sieve
         $this->_bypassAuth        = $bypassAuth;
         $this->_useTLS            = $useTLS;
         $this->_options           = (array) $options;
+	$this->_servicePrincipal  = $servicePrincipal;
         $this->setDebug($debug, $handler);
 
         /* Try to include the Auth_SASL package.  If the package is not
@@ -277,6 +289,16 @@ class Net_Sieve
     }
 
     /**
+     * Sets the Kerberos service principal for use with GSSAPI
+     * authentication.
+     *
+     * @param string $principal	The Kerberos service principal
+     */
+    function setServicePrincipal($principal) {
+	$this->_servicePrincipal = $principal;
+    }
+
+    /**
      * Connects to the server and logs in.
      *
      * @return boolean  True on success, PEAR_Error on failure.
@@ -312,6 +334,7 @@ class Net_Sieve
         $this->_data['host'] = $host;
         $this->_data['port'] = $port;
         $this->_useTLS       = $useTLS;
+
         if (is_array($options)) {
             $this->_options = array_merge($this->_options, $options);
         }
@@ -620,6 +643,9 @@ class Net_Sieve
         case 'EXTERNAL':
             $result = $this->_authEXTERNAL($uid, $pwd, $euser);
             break;
+	case 'GSSAPI':
+	    $result = $this->_authGSSAPI($pwd);
+	    break;
         default :
             $result = $this->_pear->raiseError(
                 $method . ' is not a supported authentication method'
@@ -659,6 +685,48 @@ class Net_Sieve
                 base64_encode($euser . chr(0) . $user . chr(0) . $pass)
             )
         );
+    }
+
+    /**
+     * Authenticates the user using the GSSAPI method.
+     *
+     * @note the PHP krb5 extension is required and the service principal must have been set.
+     * @see  setServicePrincipal()
+     */
+    function _authGSSAPI(){
+	if (!extension_loaded('krb5')) {
+		return $this->_pear->raiseError('The krb5 extension is required for GSSAPI authentication', 2);
+	}
+	if (!$this->_servicePrincipal) {
+		return $this->_pear->raiseError('No Kerberos service principal set', 2);
+	}
+	putenv('KRB5CCNAME=' . $_SERVER['KRB5CCNAME']);
+	try {
+		$ccache = new KRB5CCache();
+		$ccache->open($_SERVER['KRB5CCNAME']);
+		$gssapicontext = new GSSAPIContext();
+		$gssapicontext->acquireCredentials($ccache);
+		$token = '';
+		$success = $gssapicontext->initSecContext($this->_servicePrincipal, null, null, null, $token);
+		$token = base64_encode($token);
+	}
+	catch (Exception $e) {
+		return $this->_pear->raiseError('GSSAPI authentication failed: ' . $e->getMessage());
+	}
+
+	$this->_sendCmd("AUTHENTICATE \"GSSAPI\" {" . strlen($token) . "+}");
+	$response = $this->_doCmd($token, true);
+	try {
+		$challenge = base64_decode(substr($response, 1, -1));
+		$gssapicontext->unwrap($challenge, $challenge);
+                $gssapicontext->wrap($challenge, $challenge, true);
+	}
+        catch (Exception $e) {
+		return $this->_pear->raiseError('GSSAPI authentication failed: ' . $e->getMessage());
+	}
+	$response = base64_encode($challenge);
+	$this->_sendCmd("{" . strlen($response) . "+}");
+	return $this->_sendCmd($response);
     }
 
     /**
