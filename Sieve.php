@@ -79,6 +79,7 @@ define('NET_SIEVE_STATE_TRANSACTION', 3, true);
  * @author    Damian Fernandez Sosa <damlists@cnba.uba.ar>
  * @author    Anish Mistry <amistry@am-productions.biz>
  * @author    Jan Schneider <jan@horde.org>
+ * @author    Neil Munday <neil@mundayweb.com>
  * @copyright 2002-2003 Richard Heyes
  * @copyright 2006-2008 Anish Mistry
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
