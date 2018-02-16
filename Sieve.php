@@ -232,7 +232,7 @@ class Net_Sieve
         $port = 2000, $logintype = '', $euser = '',
         $debug = false, $bypassAuth = false, $useTLS = true,
         $options = null, $handler = null,
-	$servicePrincipal
+	$servicePrincipal = null
     ) {
         $this->_pear = new PEAR();
         $this->_state             = NET_SIEVE_STATE_DISCONNECTED;
