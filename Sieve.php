@@ -198,7 +198,14 @@ class Net_Sieve
      *
      * @var string
      */
-    var $_servicePrincipal = null;
+    var $_gssapiPrincipal = null;
+
+    /**
+     * Kerberos service cname to use for GSSAPI authentication.
+     *
+     * @var string
+     */
+    var $_gssapiCN = null;
 
     /**
      * Constructor.
@@ -224,11 +231,13 @@ class Net_Sieve
      * @param mixed   $handler    A callback handler for the debug output.
      * @param string  $principal  Kerberos service principal to use
      *                            with GSSAPI authentication.
+     * @param string  $cname      Kerberos service cname to use
+     *                            with GSSAPI authentication.
      */
     function __construct($user = null, $pass  = null, $host = 'localhost',
         $port = 2000, $logintype = '', $euser = '',
         $debug = false, $bypassAuth = false, $useTLS = true,
-        $options = null, $handler = null, $principal = null
+        $options = null, $handler = null, $principal = null, $cname = null
     ) {
         $this->_pear = new PEAR();
         $this->_state             = NET_SIEVE_STATE_DISCONNECTED;
@@ -242,7 +251,8 @@ class Net_Sieve
         $this->_bypassAuth        = $bypassAuth;
         $this->_useTLS            = $useTLS;
         $this->_options           = (array) $options;
-        $this->_servicePrincipal  = $principal;
+        $this->_gssapiPrincipal   = $principal;
+        $this->_gssapiCN          = $cname;
 
         $this->setDebug($debug, $handler);
 
@@ -296,7 +306,20 @@ class Net_Sieve
      */
     function setServicePrincipal($principal)
     {
-        $this->_servicePrincipal = $principal;
+        $this->_gssapiPrincipal = $principal;
+    }
+
+    /**
+     * Sets the Kerberos service CName for use with GSSAPI
+     * authentication.
+     *
+     * @param string $cname The Kerberos service principal
+     *
+     * @return void
+     */
+    function setServiceCN($cname)
+    {
+        $this->_gssapiCN = $cname;
     }
 
     /**
@@ -712,7 +735,8 @@ class Net_Sieve
     /**
      * Authenticates the user using the GSSAPI method.
      *
-     * @note the PHP krb5 extension is required and the service principal must have been set.
+     * @note the PHP krb5 extension is required and the service principal and cname
+     *       must have been set.
      * @see  setServicePrincipal()
      *
      * @return void
@@ -723,21 +747,25 @@ class Net_Sieve
             return $this->_pear->raiseError('The krb5 extension is required for GSSAPI authentication', 2);
         }
 
-        if (!$this->_servicePrincipal) {
+        if (!$this->_gssapiPrincipal) {
             return $this->_pear->raiseError('No Kerberos service principal set', 2);
         }
 
-        putenv('KRB5CCNAME=' . $_SERVER['KRB5CCNAME']);
+        if (!$this->_gssapiCN) {
+            return $this->_pear->raiseError('No Kerberos service CName set', 2);
+        }
+
+        putenv('KRB5CCNAME=' . $this->_gssapiCN);
 
         try {
             $ccache = new KRB5CCache();
-            $ccahe->open($_SERVER['KRB5CCNAME']);
+            $ccahe->open($this->_gssapiCN);
 
             $gssapicontext = new GSSAPIContext();
             $gssapicontext->acquireCredentials($ccache);
 
             $token   = '';
-            $success = $gssapicontext->initSecContext($this->_servicePrincipal, null, null, null, $token);
+            $success = $gssapicontext->initSecContext($this->_gssapiPrincipal, null, null, null, $token);
             $token   = base64_encode($token);
         }
         catch (Exception $e) {
