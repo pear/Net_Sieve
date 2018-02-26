@@ -759,7 +759,7 @@ class Net_Sieve
 
         try {
             $ccache = new KRB5CCache();
-            $ccahe->open($this->_gssapiCN);
+            $ccache->open($this->_gssapiCN);
 
             $gssapicontext = new GSSAPIContext();
             $gssapicontext->acquireCredentials($ccache);
