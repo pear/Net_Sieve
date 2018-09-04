@@ -751,11 +751,9 @@ class Net_Sieve
             return $this->_pear->raiseError('No Kerberos service principal set', 2);
         }
 
-        if (!$this->_gssapiCN) {
-            return $this->_pear->raiseError('No Kerberos service CName set', 2);
+        if ($this->_gssapiCN) {
+            putenv('KRB5CCNAME=' . $this->_gssapiCN);
         }
-
-        putenv('KRB5CCNAME=' . $this->_gssapiCN);
 
         try {
             $ccache = new KRB5CCache();
