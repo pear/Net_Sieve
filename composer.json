@@ -1,6 +1,11 @@
 {
     "authors": [
         {
+            "email": "alec@alec.pl",
+            "name": "Aleksander Machniak",
+            "role": "Lead"
+        },
+        {
             "email": "jan@horde.org",
             "name": "Jan Schneider",
             "role": "Lead"
