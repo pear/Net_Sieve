@@ -510,7 +510,7 @@ class Net_Sieve
      * @param string $scriptname The name of the script to be retrieved.
      *
      * @return string  The script on success, PEAR_Error on failure.
-    */
+     */
     function getScript($scriptname)
     {
         return $this->_cmdGetScript($scriptname);
@@ -964,7 +964,7 @@ class Net_Sieve
      * @param string $scriptname The name of the script to mark as active.
      *
      * @return boolean  True on success, PEAR_Error otherwise.
-    */
+     */
     function _cmdSetActive($scriptname)
     {
         if (NET_SIEVE_STATE_TRANSACTION != $this->_state) {
