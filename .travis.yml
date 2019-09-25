@@ -1,5 +1,5 @@
 language: php
-dist: trusty
+dist: precise
 install:
   - pear install Net_Socket PEAR Auth_SASL
 php:
