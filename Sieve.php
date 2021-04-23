@@ -102,7 +102,8 @@ class Net_Sieve
         'EXTERNAL',
         'PLAIN' ,
         'LOGIN',
-        'GSSAPI'
+        'GSSAPI',
+        'XOAUTH2'
     );
 
     /**
@@ -692,6 +693,9 @@ class Net_Sieve
         case 'GSSAPI':
             $result = $this->_authGSSAPI($pwd);
             break;
+        case 'XOAUTH2':
+            $result = $this->_authXOAUTH2($uid, $pwd, $euser);
+            break;
         default :
             $result = $this->_pear->raiseError(
                 $method . ' is not a supported authentication method'
@@ -913,6 +917,26 @@ class Net_Sieve
         );
 
         return $this->_sendCmd($cmd);
+    }
+
+    /**
+     * Authenticates the user using the XOAUTH2 method.
+     *
+     * @param string $user  The userid to authenticate as.
+     * @param string $token The token to authenticate with.
+     * @param string $euser The effective uid to authenticate as.
+     *
+     * @return void
+     */
+    function _authXOAUTH2($user, $token, $euser)
+    {
+        // default to $user if $euser is not set
+        if (! $euser) {
+            $euser = $user;
+        }
+
+        $auth = base64_encode("user=$euser\001auth=$token\001\001");
+        return $this->_sendCmd("AUTHENTICATE \"XOAUTH2\" \"$auth\"");
     }
 
     /**
