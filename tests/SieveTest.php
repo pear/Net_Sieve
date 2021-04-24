@@ -52,7 +52,7 @@ require_once dirname(__FILE__) . '/../Sieve.php';
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Net_Sieve
  */
-class SieveTest extends PHPUnit_Framework_TestCase
+class SieveTest extends PHPUnit\Framework\TestCase
 {
     // contains the object handle of the string class
     protected $fixture;
