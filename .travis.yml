@@ -1,6 +1,7 @@
 language: php
 dist: xenial
 install:
+  - if [[ ${TRAVIS_PHP_VERSION:0:1} == "8" ]]; then composer config platform.php 7.4; fi
   - composer install --prefer-dist
 matrix:
   fast_finish: true
@@ -19,4 +20,6 @@ matrix:
   - php: 7.3
   - php: 7.4
   - php: 8.0
-script: vendor/bin/phpunit tests/*Test.php
+    dist: bionic
+script:
+  - vendor/bin/phpunit tests/*Test.php
