@@ -334,12 +334,14 @@ class Net_Sieve
         if (is_a($res, 'PEAR_Error')) {
             return $res;
         }
+
         if ($this->_bypassAuth === false) {
             $res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'], $this->_data['euser'], $this->_bypassAuth);
             if (is_a($res, 'PEAR_Error')) {
                 return $res;
             }
         }
+
         return true;
     }
 
