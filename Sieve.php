@@ -268,7 +268,7 @@ class Net_Sieve
             );
         }
 
-        if (strlen($user) && strlen($pass)) {
+        if (is_string($user) && strlen($user) && strlen($pass)) {
             $this->_error = $this->_handleConnectAndLogin();
         }
     }
