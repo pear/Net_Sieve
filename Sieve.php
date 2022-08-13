@@ -1418,7 +1418,8 @@ class Net_Sieve
         // Unfortunately old Cyrus versions are broken and don't send a
         // CAPABILITY response, thus we would wait here forever. Parse the
         // Cyrus version and work around this broken behavior.
-        if (!preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches)
+        if (empty($this->_capability['implementation'])
+            || !preg_match('/^CYRUS TIMSIEVED V([0-9.]+)/', $this->_capability['implementation'], $matches)
             || version_compare($matches[1], '2.3.10', '>=')
         ) {
             $res = $this->_doCmd();
