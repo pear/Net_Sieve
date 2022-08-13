@@ -132,7 +132,7 @@ class Net_Sieve
      *
      * @var array
      */
-    var $_capability = [];
+    var $_capability = array();
 
     /**
      * Current state of the connection.
