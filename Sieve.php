@@ -128,6 +128,13 @@ class Net_Sieve
     var $_data;
 
     /**
+     * Server capabilities.
+     *
+     * @var array
+     */
+    var $_capability = [];
+
+    /**
      * Current state of the connection.
      *
      * One of the NET_SIEVE_STATE_* constants.
@@ -1125,8 +1132,7 @@ class Net_Sieve
     function _parseCapability($data)
     {
         // Clear the cached capabilities.
-        $this->_capability = array('sasl' => array(),
-                                   'extensions' => array());
+        $this->_capability = array('sasl' => array(), 'extensions' => array());
 
         $data = preg_split('/\r?\n/', $this->_toUpper($data), -1, PREG_SPLIT_NO_EMPTY);
 
