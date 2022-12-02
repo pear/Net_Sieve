@@ -2,8 +2,6 @@
 /**
  * This file contains the Net_Sieve class.
  *
- * PHP version 5
- *
  * +-----------------------------------------------------------------------+
  * | All rights reserved.                                                  |
  * |                                                                       |
@@ -38,8 +36,8 @@
  * @author    Jan Schneider <jan@horde.org>
  * @copyright 2002-2003 Richard Heyes
  * @copyright 2006-2008 Anish Mistry
- * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @link      http://pear.php.net/package/Net_Sieve
+ * @license   https://www.opensource.org/licenses/bsd-license.php BSD
+ * @link      https://pear.php.net/package/Net_Sieve
  */
 
 require_once 'PEAR.php';

@@ -46,7 +46,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <release>stable</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+ <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
 * Fix PHP 8.1 deprecation warnings
  </notes>
@@ -96,7 +96,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Support GSSAPI authentication
    </notes>
@@ -111,7 +111,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Composer: Fix license identifier, don't use unbound version numbers for deps
    </notes>
@@ -126,7 +126,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Use 8bit instead of latin1 for string length in bytes calculation
 * Extend listScripts() so it's possible to get an active script name in one go
@@ -143,7 +143,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Dropped PHP4 support, fixed PHP7 warnings
 * Fixed E_DEPRECATED warning on Auth_SASL::factory() call
@@ -160,7 +160,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Remove erroneous and unnecessary active script caching (Bug #20472).
    </notes>
   </release>
@@ -174,7 +174,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fix notices from non-static calling of PEAR methods.
 * Fix reading OK responses with string literal messages.
    </notes>
@@ -189,7 +189,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fix referrals if host data or user credentials are passed to connect() and login() instead of the constructor (Aleksander Machniak, Bug #17107).
 </notes>
   </release>
@@ -203,7 +203,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Query capabilities again after successful authentication (Jesse Crawford, Request #18382).
 * Escape quotes and backslashes in script names, and use literal strings for script names with non-ASCII characters (Aleksander Machniak, Bug #16691).
 * Work around broken STARTTLS behavior in Cyrus versions before 2.3.10 (Aleksander Machniak, Bug #18241).
@@ -219,7 +219,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Add debug handler parameter to constructor.
 * Fix LOGIN authentication (Agustín Eijo, Aleksander Machniak, Bug #17527).</notes>
   </release>
@@ -233,7 +233,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fix SASL authentication without Auth_SASL (Bug #17489).</notes>
   </release>
   <release>
@@ -246,7 +246,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fix DIGEST-MD5 authentication with Dovecot (Stef Simoens, Bug #17320).</notes>
   </release>
   <release>
@@ -259,7 +259,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>Changes since version 1.2.0b1:
 * Fix DIGEST-MD5 authentication (Aleksander Machniak, Bug #17285).
 * Don't try to call dl() if mbstring extension isn't loaded (Bug #17038).
@@ -279,7 +279,7 @@ Changes since version 1.1.7:
     <release>beta</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Added support for adding a custom debug handler (Aleksander Machniak, Request #16681).
 * Fix breakage with certain locales, especially Turkish.
 * Fix reading authentication responses without literals (Bug #16647).
@@ -295,7 +295,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed STARTTLS support (Bug #14205).
 * Added connect options and EXTERNAL authentication.</notes>
   </release>
@@ -309,7 +309,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
     * Fixed Bug #9273
     * Fixed copy/paste error in CRAM and DIGEST authentication error case.
@@ -325,7 +325,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
     * Fixed Bug connect() bug
     * Fixed Request #8071
@@ -341,7 +341,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
     * Fixed Bug #8452 Unterminated read loop
     * Fixed Bug #7845 Add mbstring support
@@ -359,7 +359,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
     * Correctly Fixed Bug #3519 Net_Sieve w/ externally established sockets
     * Fixed Bug #7197 getScript() truncates long scripts
@@ -376,7 +376,7 @@ Changes since version 1.1.7:
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed Request #4053 Added STARTTLS support for PHP 5.1 and above
     * Fixed Bug #3519 Net_Sieve w/ externally established sockets
     * Fixed Bug #4794 drops protocol prefix, e.g. &quot;ssl://&quot; in referrals
@@ -394,7 +394,7 @@ Changes since version 1.1.7:
     <api>stable</api>
    </stability>
    <date>2005-02-02</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed Bug #3242 cyrus murder referrals not followed 
    </notes>
   </release>
@@ -408,7 +408,7 @@ Changes since version 1.1.7:
     <api>stable</api>
    </stability>
    <date>2004-12-18</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed Bug #2728 Linebreaks not being read using getScript()
    </notes>
   </release>
@@ -422,7 +422,7 @@ Changes since version 1.1.7:
     <api>stable</api>
    </stability>
    <date>2004-03-13</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Fixed BUG #1006
    </notes>
@@ -437,7 +437,7 @@ Changes since version 1.1.7:
     <api>stable</api>
    </stability>
    <date>2004-03-10</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Fixed DIGEST-MD5 sasl version handling (sasl v1.xx responses are diferent than v2.xx)
 * Fixed LOGIN Method
    </notes>
@@ -452,7 +452,7 @@ Changes since version 1.1.7:
     <api>beta</api>
    </stability>
    <date>2004-02-29</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* There is an issue whith the DIGEST-MD5 method. in one installation it does not work but in my server it works perfect! please send me debug info to solve the problem if
 it affects you or disable DIGEST-MD5
 * some optimizations to the code
@@ -483,7 +483,7 @@ it affects you or disable DIGEST-MD5
     <api>beta</api>
    </stability>
    <date>2004-01-31</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>* Added setDebug() method and debugging capabilities
 * added disconnect() method
 * added sample file test_sieve.php
@@ -501,7 +501,7 @@ it affects you or disable DIGEST-MD5
     <api>beta</api>
    </stability>
    <date>2002-07-27</date>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>Initial release
    </notes>
   </release>
@@ -515,7 +515,7 @@ it affects you or disable DIGEST-MD5
     <api>beta</api>
    </stability>
    <date>2002-05-10</date>
-   <license uri="http://www.php.net/license">PHP</license>
+   <license uri="https://www.php.net/license">PHP</license>
    <notes>Initial release
    </notes>
   </release>
@@ -529,7 +529,7 @@ it affects you or disable DIGEST-MD5
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Fix PHP 7.3: Declaration of case-insensitive constants is deprecated
    </notes>
@@ -544,7 +544,7 @@ it affects you or disable DIGEST-MD5
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Support XOAUTH2 authorization method
    </notes>
