@@ -37,9 +37,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2021-04-24</date>
+ <date>2022-12-02</date>
  <version>
-  <release>1.4.5</release>
+  <release>1.4.6</release>
   <api>1.4.3</api>
  </version>
  <stability>
@@ -48,7 +48,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Support XOAUTH2 authorization method
+* Fix PHP 8.1 deprecation warnings
  </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
@@ -532,6 +532,21 @@ it affects you or disable DIGEST-MD5
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Fix PHP 7.3: Declaration of case-insensitive constants is deprecated
+   </notes>
+  </release>
+  <release>
+   <date>2021-04-24</date>
+   <version>
+    <release>1.4.5</release>
+    <api>1.4.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+* Support XOAUTH2 authorization method
    </notes>
   </release>
  </changelog>
