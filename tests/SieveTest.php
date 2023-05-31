@@ -57,7 +57,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
     // contains the object handle of the string class
     protected $fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!file_exists(dirname(__FILE__) . '/config.php')) {
             $this->markTestSkipped('Test configuration incomplete. Copy config.php.dist to config.php.');
@@ -74,7 +74,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
             'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
     }
     
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // Delete the instance.
         unset($this->fixture);
