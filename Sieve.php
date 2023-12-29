@@ -226,7 +226,9 @@ class Net_Sieve
      * @param string  $host       Hostname of server.
      * @param string  $port       Port of server.
      * @param string  $logintype  Type of login to perform (see
-     *                            $supportedAuthMethods).
+     *                            $supportedAuthMethods), use `OAUTH` and lib
+     *                            will choose between OAUTHBEARER or XOAUTH2
+     *                            according the server's capabilities.
      * @param string  $euser      Effective user. If authenticating as an
      *                            administrator, login as this user.
      * @param boolean $debug      Whether to enable debugging (@see setDebug()).
@@ -458,6 +460,17 @@ class Net_Sieve
         }
 
         if (!$bypassAuth ) {
+            // special case of OAUTH, use the supported method
+            if ($logintype === 'OAUTH') {
+                $supported_logintypes = $this->_capability['sasl'];
+                foreach (['OAUTHBEARER', 'XOAUTH2'] as $logintype) {
+                    if (in_array($logintype, $supported_logintypes)) {
+                        break;
+                    }
+                }
+                $this->_data['logintype'] = $logintype;
+            }
+
             $res = $this->_cmdAuthenticate($user, $pass, $logintype, $euser);
             if (is_a($res, 'PEAR_Error')) {
                 return $res;
