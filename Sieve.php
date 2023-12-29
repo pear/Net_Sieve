@@ -138,7 +138,7 @@ class Net_Sieve
      *
      * One of the NET_SIEVE_STATE_* constants.
      *
-     * @var integer
+     * @var int
      */
     var $_state;
 
@@ -159,7 +159,7 @@ class Net_Sieve
     /**
      * Whether to enable debugging.
      *
-     * @var boolean
+     * @var bool
      */
     var $_debug = false;
 
@@ -175,14 +175,14 @@ class Net_Sieve
     /**
      * Whether to pick up an already established connection.
      *
-     * @var boolean
+     * @var bool
      */
     var $_bypassAuth = false;
 
     /**
      * Whether to use TLS if available.
      *
-     * @var boolean
+     * @var bool
      */
     var $_useTLS = true;
 
@@ -231,10 +231,10 @@ class Net_Sieve
      *                            according the server's capabilities.
      * @param string  $euser      Effective user. If authenticating as an
      *                            administrator, login as this user.
-     * @param boolean $debug      Whether to enable debugging (@see setDebug()).
+     * @param bool    $debug      Whether to enable debugging (@see setDebug()).
      * @param string  $bypassAuth Skip the authentication phase. Useful if the
      *                            socket is already open.
-     * @param boolean $useTLS     Use TLS if available.
+     * @param bool    $useTLS     Use TLS if available.
      * @param array   $options    Additional options for
      *                            stream_context_create().
      * @param mixed   $handler    A callback handler for the debug output.
@@ -284,7 +284,7 @@ class Net_Sieve
     /**
      * Returns any error that may have been generated in the constructor.
      *
-     * @return boolean|PEAR_Error  False if no error, PEAR_Error otherwise.
+     * @return bool|PEAR_Error False if no error, PEAR_Error otherwise.
      */
     function getError()
     {
@@ -294,8 +294,8 @@ class Net_Sieve
     /**
      * Sets the debug state and handler function.
      *
-     * @param boolean $debug   Whether to enable debugging.
-     * @param string  $handler A custom debug handler. Must be a valid callback.
+     * @param bool   $debug   Whether to enable debugging.
+     * @param string $handler A custom debug handler. Must be a valid callback.
      *
      * @return void
      */
@@ -334,7 +334,7 @@ class Net_Sieve
     /**
      * Connects to the server and logs in.
      *
-     * @return boolean  True on success, PEAR_Error on failure.
+     * @return bool|PEAR_Error True on success, PEAR_Error on failure.
      */
     function _handleConnectAndLogin()
     {
@@ -360,9 +360,9 @@ class Net_Sieve
      * @param string  $port    Port of server.
      * @param array   $options List of options to pass to
      *                         stream_context_create().
-     * @param boolean $useTLS  Use TLS if available.
+     * @param bool    $useTLS  Use TLS if available.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function connect($host, $port, $options = null, $useTLS = true)
     {
@@ -426,10 +426,10 @@ class Net_Sieve
     /**
      * Disconnect from the Sieve server.
      *
-     * @param boolean $sendLogoutCMD Whether to send LOGOUT command before
-     *                               disconnecting.
+     * @param bool $sendLogoutCMD Whether to send LOGOUT command before
+     *                            disconnecting.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function disconnect($sendLogoutCMD = true)
     {
@@ -443,9 +443,9 @@ class Net_Sieve
      * @param string  $pass       Login password.
      * @param string  $logintype  Type of login method to use.
      * @param string  $euser      Effective UID (perform on behalf of $euser).
-     * @param boolean $bypassAuth Do not perform authentication.
+     * @param bool    $bypassAuth Do not perform authentication.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function login($user, $pass, $logintype = null, $euser = '', $bypassAuth = false)
     {
@@ -487,7 +487,7 @@ class Net_Sieve
      *
      * @param string $active Will be set to the name of the active script
      *
-     * @return array  Indexed array of scriptnames, PEAR_Error on failure
+     * @return array|PEAR_Error Indexed array of scriptnames, PEAR_Error on failure
      */
     function listScripts(&$active = null)
     {
@@ -505,7 +505,7 @@ class Net_Sieve
     /**
      * Returns the active script.
      *
-     * @return string  The active scriptname.
+     * @return string|null The active scriptname.
      */
     function getActive()
     {
@@ -519,7 +519,7 @@ class Net_Sieve
      *
      * @param string $scriptname The name of the script to be set as active.
      *
-     * @return boolean  True on success, PEAR_Error on failure.
+     * @return bool|PEAR_Error True on success, PEAR_Error on failure.
      */
     function setActive($scriptname)
     {
@@ -531,7 +531,7 @@ class Net_Sieve
      *
      * @param string $scriptname The name of the script to be retrieved.
      *
-     * @return string  The script on success, PEAR_Error on failure.
+     * @return string|PEAR_Error The script on success, PEAR_Error on failure.
      */
     function getScript($scriptname)
     {
@@ -543,9 +543,9 @@ class Net_Sieve
      *
      * @param string  $scriptname Name of the script.
      * @param string  $script     The script content.
-     * @param boolean $makeactive Whether to make this the active script.
+     * @param bool    $makeactive Whether to make this the active script.
      *
-     * @return boolean  True on success, PEAR_Error on failure.
+     * @return bool|PEAR_Error True on success, PEAR_Error on failure.
      */
     function installScript($scriptname, $script, $makeactive = false)
     {
@@ -566,7 +566,7 @@ class Net_Sieve
      *
      * @param string $scriptname Name of the script.
      *
-     * @return boolean  True on success, PEAR_Error on failure.
+     * @return bool|PEAR_Error True on success, PEAR_Error on failure.
      */
     function removeScript($scriptname)
     {
@@ -576,10 +576,10 @@ class Net_Sieve
     /**
      * Checks if the server has space to store the script by the server.
      *
-     * @param string  $scriptname The name of the script to mark as active.
-     * @param integer $size       The size of the script.
+     * @param string $scriptname The name of the script to mark as active.
+     * @param int    $size       The size of the script.
      *
-     * @return boolean|PEAR_Error  True if there is space, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True if there is space, PEAR_Error otherwise.
      *
      * @todo Rename to hasSpace()
      */
@@ -600,7 +600,7 @@ class Net_Sieve
     /**
      * Returns the list of extensions the server supports.
      *
-     * @return array  List of extensions or PEAR_Error on failure.
+     * @return array|PEAR_Error List of extensions or PEAR_Error on failure.
      */
     function getExtensions()
     {
@@ -616,8 +616,7 @@ class Net_Sieve
      *
      * @param string $extension The extension to check.
      *
-     * @return boolean  Whether the extension is supported or PEAR_Error on
-     *                  failure.
+     * @return bool|PEAR_Error Whether the extension is supported or PEAR_Error on failure.
      */
     function hasExtension($extension)
     {
@@ -640,7 +639,7 @@ class Net_Sieve
     /**
      * Returns the list of authentication methods the server supports.
      *
-     * @return array  List of authentication methods or PEAR_Error on failure.
+     * @return array|PEAR_Error List of authentication methods or PEAR_Error on failure.
      */
     function getAuthMechs()
     {
@@ -656,8 +655,7 @@ class Net_Sieve
      *
      * @param string $method The method to check.
      *
-     * @return boolean  Whether the method is supported or PEAR_Error on
-     *                  failure.
+     * @return bool|PEAR_Error Whether the method is supported or PEAR_Error on failure.
      */
     function hasAuthMech($method)
     {
@@ -991,7 +989,7 @@ class Net_Sieve
      *
      * @param string $scriptname Name of the script to delete.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function _cmdDeleteScript($scriptname)
     {
@@ -1012,7 +1010,7 @@ class Net_Sieve
      *
      * @param string $scriptname Name of the script to retrieve.
      *
-     * @return string  The script if successful, PEAR_Error otherwise.
+     * @return string|PEAR_Error The script if successful, PEAR_Error otherwise.
      */
     function _cmdGetScript($scriptname)
     {
@@ -1034,7 +1032,7 @@ class Net_Sieve
      *
      * @param string $scriptname The name of the script to mark as active.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function _cmdSetActive($scriptname)
     {
@@ -1090,7 +1088,7 @@ class Net_Sieve
      * @param string $scriptname Name of the new script.
      * @param string $scriptdata The new script.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function _cmdPutScript($scriptname, $scriptdata)
     {
@@ -1117,10 +1115,10 @@ class Net_Sieve
     /**
      * Logs out of the server and terminates the connection.
      *
-     * @param boolean $sendLogoutCMD Whether to send LOGOUT command before
-     *                               disconnecting.
+     * @param bool $sendLogoutCMD Whether to send LOGOUT command before
+     *                            disconnecting.
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function _cmdLogout($sendLogoutCMD = true)
     {
@@ -1144,7 +1142,7 @@ class Net_Sieve
     /**
      * Sends the CAPABILITY command
      *
-     * @return boolean  True on success, PEAR_Error otherwise.
+     * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
     function _cmdCapability()
     {
@@ -1263,7 +1261,7 @@ class Net_Sieve
     /**
      * Receives a number of bytes from the server.
      *
-     * @param integer $length Number of bytes to read.
+     * @param int $length Number of bytes to read.
      *
      * @return string The server response.
      */
@@ -1282,8 +1280,8 @@ class Net_Sieve
     /**
      * Send a command and retrieves a response from the server.
      *
-     * @param string  $cmd  The command to send.
-     * @param boolean $auth Whether this is an authentication command.
+     * @param string $cmd  The command to send.
+     * @param bool   $auth Whether this is an authentication command.
      *
      * @return string|PEAR_Error Reponse string if an OK response, PEAR_Error
      *                           if a NO response.
@@ -1426,7 +1424,7 @@ class Net_Sieve
     /**
      * Starts a TLS connection.
      *
-     * @return boolean  True on success, PEAR_Error on failure.
+     * @return bool|PEAR_Error True on success, PEAR_Error on failure.
      */
     function _startTLS()
     {
@@ -1484,7 +1482,7 @@ class Net_Sieve
      *
      * @param string $string A string.
      *
-     * @return integer  The length of the string.
+     * @return int The length of the string.
      */
     function _getLineLength($string)
     {
