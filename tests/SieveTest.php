@@ -67,19 +67,20 @@ class SieveTest extends PHPUnit\Framework\TestCase
         // Create a new instance of Net_Sieve.
         $this->_pear = new PEAR();
         $this->fixture = new Net_Sieve();
-        $this->scripts = array(
+        $this->scripts = [
             'test script1' => "require \"fileinto\";\r\nif header :contains \"From\" \"@cnba.uba.ar\" \r\n{fileinto \"INBOX.Test1\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test script2' => "require \"fileinto\";\r\nif header :contains \"From\" \"@cnba.uba.ar\" \r\n{fileinto \"INBOX.Test\";}\r\nelse \r\n{fileinto \"INBOX\";}",
             'test"scriptäöü3' => "require \"vacation\";\nvacation\n:days 7\n:addresses [\"matthew@de-construct.com\"]\n:subject \"This is a test\"\n\"I'm on my holiday!\nsadfafs\";",
-            'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'));
+            'test script4' => file_get_contents(dirname(__FILE__) . '/largescript.siv'),
+        ];
     }
-    
+
     protected function tearDown(): void
     {
         // Delete the instance.
         unset($this->fixture);
     }
-    
+
     protected function login()
     {
         $result = $this->fixture->connect(HOST, PORT);

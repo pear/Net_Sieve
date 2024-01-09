@@ -94,7 +94,7 @@ class Net_Sieve
      *
      * @var array
      */
-    var $supportedAuthMethods = array(
+    var $supportedAuthMethods = [
         'DIGEST-MD5',
         'CRAM-MD5',
         'EXTERNAL',
@@ -103,14 +103,14 @@ class Net_Sieve
         'GSSAPI',
         'XOAUTH2',
         'OAUTHBEARER'
-    );
+    ];
 
     /**
      * SASL authentication methods that require Auth_SASL.
      *
      * @var array
      */
-    var $supportedSASLAuthMethods = array('DIGEST-MD5', 'CRAM-MD5');
+    var $supportedSASLAuthMethods = ['DIGEST-MD5', 'CRAM-MD5'];
 
     /**
      * The socket handle.
@@ -131,7 +131,7 @@ class Net_Sieve
      *
      * @var array
      */
-    var $_capability = array();
+    var $_capability = [];
 
     /**
      * Current state of the connection.
@@ -1055,7 +1055,7 @@ class Net_Sieve
             return $res;
         }
 
-        $scripts = array();
+        $scripts = [];
         $activescript = null;
         $res = explode("\r\n", $res);
         foreach ($res as $value) {
@@ -1068,7 +1068,7 @@ class Net_Sieve
             }
         }
 
-        return array($scripts, $activescript);
+        return [$scripts, $activescript];
     }
 
     /**
@@ -1157,7 +1157,7 @@ class Net_Sieve
     function _parseCapability($data)
     {
         // Clear the cached capabilities.
-        $this->_capability = array('sasl' => array(), 'extensions' => array());
+        $this->_capability = ['sasl' => [], 'extensions' => []];
 
         $data = preg_split('/\r?\n/', $this->_toUpper($data), -1, PREG_SPLIT_NO_EMPTY);
 
@@ -1535,7 +1535,7 @@ class Net_Sieve
     {
         if ($this->_debug) {
             if ($this->_debug_handler) {
-                call_user_func_array($this->_debug_handler, array(&$this, $message));
+                call_user_func_array($this->_debug_handler, [$this, $message]);
             } else {
                 echo "$message\n";
             }
