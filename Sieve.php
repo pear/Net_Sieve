@@ -459,18 +459,7 @@ class Net_Sieve
             return $this->_pear->raiseError('Not currently in AUTHORISATION state', 1);
         }
 
-        if (!$bypassAuth ) {
-            // special case of OAUTH, use the supported method
-            if ($logintype === 'OAUTH') {
-                $supported_logintypes = $this->_capability['sasl'];
-                foreach (['OAUTHBEARER', 'XOAUTH2'] as $logintype) {
-                    if (in_array($logintype, $supported_logintypes)) {
-                        break;
-                    }
-                }
-                $this->_data['logintype'] = $logintype;
-            }
-
+        if (!$bypassAuth) {
             $res = $this->_cmdAuthenticate($user, $pass, $logintype, $euser);
             if (is_a($res, 'PEAR_Error')) {
                 return $res;
@@ -1386,20 +1375,28 @@ class Net_Sieve
      *
      * @param string $userMethod Only consider this method as available.
      *
-     * @return string  The name of the best supported authentication method or
-     *                 a PEAR_Error object on failure.
+     * @return string The name of the best supported authentication method or
+     *                a PEAR_Error object on failure.
      */
     function _getBestAuthMethod($userMethod = null)
     {
         if (!isset($this->_capability['sasl'])) {
             return $this->_pear->raiseError('This server doesn\'t support any authentication methods. SASL problem?');
         }
+
         if (!$this->_capability['sasl']) {
             return $this->_pear->raiseError('This server doesn\'t support any authentication methods.');
         }
 
         if ($userMethod) {
-            if (in_array($userMethod, $this->_capability['sasl'])) {
+            // special case of OAUTH, use the supported method
+            if ($userMethod === 'OAUTH') {
+                foreach (['OAUTHBEARER', 'XOAUTH2'] as $method) {
+                    if (in_array($method, $this->_capability['sasl'])) {
+                        return $method;
+                    }
+                }
+            } elseif (in_array($userMethod, $this->_capability['sasl'])) {
                 return $userMethod;
             }
 
@@ -1498,7 +1495,7 @@ class Net_Sieve
      *
      * @param string $string The string to convert to lowercase.
      *
-     * @return string  The lowercased string, based on ASCII encoding.
+     * @return string The lowercased string, based on ASCII encoding.
      */
     function _toUpper($string)
     {
