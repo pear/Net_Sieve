@@ -934,7 +934,8 @@ class Net_Sieve
      * Authenticates the user using the XOAUTH2 method.
      *
      * @param string $user  The userid to authenticate as.
-     * @param string $token The token to authenticate with.
+     * @param string $token The access token prefixed by it's type
+     *                      example: "Bearer $access_token".
      * @param string $euser The effective uid to authenticate as.
      *
      * @return void
@@ -954,7 +955,8 @@ class Net_Sieve
      * Authenticates the user using the OAUTHBEARER method.
      *
      * @param string $user  The userid to authenticate as.
-     * @param string $token The token to authenticate with.
+     * @param string $token The access token prefixed by it's type
+     *                      example: "Bearer $access_token".
      * @param string $euser The effective uid to authenticate as.
      *
      * @return void
