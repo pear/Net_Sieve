@@ -674,7 +674,7 @@ class Net_Sieve
      *                           the best (strongest) available method.
      * @param string $euser      The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _cmdAuthenticate($uid, $pwd, $userMethod = null, $euser = '')
     {
@@ -699,7 +699,7 @@ class Net_Sieve
             $result = $this->_authEXTERNAL($uid, $pwd, $euser);
             break;
         case 'GSSAPI':
-            $result = $this->_authGSSAPI($pwd);
+            $result = $this->_authGSSAPI();
             break;
         case 'XOAUTH2':
             $result = $this->_authXOAUTH2($uid, $pwd, $euser);
@@ -735,7 +735,7 @@ class Net_Sieve
      * @param string $pass  The password to authenticate with.
      * @param string $euser The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authPLAIN($user, $pass, $euser)
     {
@@ -754,7 +754,7 @@ class Net_Sieve
      *       must have been set.
      * @see  setServicePrincipal()
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authGSSAPI()
     {
@@ -814,7 +814,7 @@ class Net_Sieve
      * @param string $pass  The password to authenticate with.
      * @param string $euser The effective uid to authenticate as. Not used.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authLOGIN($user, $pass, $euser)
     {
@@ -838,7 +838,7 @@ class Net_Sieve
      * @param string $pass  The password to authenticate with.
      * @param string $euser The effective uid to authenticate as. Not used.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authCRAMMD5($user, $pass, $euser)
     {
@@ -866,7 +866,7 @@ class Net_Sieve
      * @param string $pass  The password to authenticate with.
      * @param string $euser The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authDigestMD5($user, $pass, $euser)
     {
@@ -916,7 +916,7 @@ class Net_Sieve
      * @param string $pass  The password to authenticate with.
      * @param string $euser The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      *
      * @since 1.1.7
      */
@@ -938,7 +938,7 @@ class Net_Sieve
      *                      example: "Bearer $access_token".
      * @param string $euser The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _authXOAUTH2($user, $token, $euser)
     {
@@ -959,7 +959,7 @@ class Net_Sieve
      *                      example: "Bearer $access_token".
      * @param string $euser The effective uid to authenticate as.
      *
-     * @return void
+     * @return PEAR_Error|null
      *
      * @see https://www.rfc-editor.org/rfc/rfc7628.html
      * @since 1.4.7
@@ -1196,7 +1196,7 @@ class Net_Sieve
      *
      * @param string $cmd The command to send.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _sendCmd($cmd)
     {
@@ -1218,7 +1218,7 @@ class Net_Sieve
      *
      * @param string $str The string to send.
      *
-     * @return void
+     * @return PEAR_Error|null
      */
     function _sendStringResponse($str)
     {
