@@ -1486,9 +1486,9 @@ class Net_Sieve
     function _getLineLength($string)
     {
         if (extension_loaded('mbstring')) {
-            return mb_strlen($string, '8bit');
+            return mb_strlen((string) $string, '8bit');
         } else {
-            return strlen($string);
+            return strlen((string) $string);
         }
     }
 
@@ -1503,7 +1503,7 @@ class Net_Sieve
     {
         $language = setlocale(LC_CTYPE, 0);
         setlocale(LC_CTYPE, 'C');
-        $string = strtoupper($string);
+        $string = strtoupper((string) $string);
         setlocale(LC_CTYPE, $language);
         return $string;
     }

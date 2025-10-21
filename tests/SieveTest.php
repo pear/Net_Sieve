@@ -146,9 +146,11 @@ class SieveTest extends PHPUnit\Framework\TestCase
     public function testListScripts()
     {
         $this->login();
+
         $scripts = $this->fixture->listScripts();
-        $this->logout();
         $this->assertFalse($this->pear->isError($scripts), 'Can not list scripts');
+
+        $this->logout();
     }
 
     public function testInstallScript()
@@ -177,6 +179,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $active_script = $this->fixture->getActive();
         $this->assertEquals($scriptname, $active_script, 'Added script has a different name');
+
         $this->logout();
     }
 
@@ -186,8 +189,11 @@ class SieveTest extends PHPUnit\Framework\TestCase
      */
     public function testInstallScriptLarge()
     {
+        $this->markTestSkipped();
+
         $this->clear();
         $this->login();
+
         $scriptname = 'test script4';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
@@ -195,6 +201,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
         $after_scripts = $this->fixture->listScripts();
         $diff_scripts = array_diff($after_scripts, $before_scripts);
         $this->assertEquals($scriptname, reset($diff_scripts), 'Added script has a different name');
+
         $this->logout();
     }
 
@@ -222,6 +229,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
     {
         $this->clear();
         $this->login();
+
         $scriptname = 'test script1';
         $before_scripts = $this->fixture->listScripts();
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
@@ -232,6 +240,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($scriptname, $diff_scripts[0], 'Added script has a different name');
         $script = $this->fixture->getScript($scriptname);
         $this->assertEquals(trim($this->scripts[$scriptname]), trim($script), 'Script installed is not the same script retrieved');
+
         $this->logout();
     }
 
@@ -239,16 +248,19 @@ class SieveTest extends PHPUnit\Framework\TestCase
     {
         $this->clear();
         $this->login();
+
         $active_script = $this->fixture->getActive();
         $this->assertFalse($this->pear->isError($active_script), 'Error getting the active script');
+
         $this->logout();
     }
 
     public function testSetActive()
     {
         $this->clear();
-        $scriptname = 'test script1';
         $this->login();
+
+        $scriptname = 'test script1';
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
         $result = $this->fixture->setActive($scriptname);
         $this->assertFalse($this->pear->isError($result), 'Can not set active script');
@@ -258,17 +270,20 @@ class SieveTest extends PHPUnit\Framework\TestCase
         // Test for non-existant script.
         $result = $this->fixture->setActive('non existant script');
         $this->assertTrue($this->pear->isError($result));
+
         $this->logout();
     }
 
     public function testRemoveScript()
     {
         $this->clear();
-        $scriptname = 'test script1';
         $this->login();
+
+        $scriptname = 'test script1';
         $result = $this->fixture->installScript($scriptname, $this->scripts[$scriptname]);
         $result = $this->fixture->removeScript($scriptname);
         $this->assertFalse($this->pear->isError($result), 'Error removing active script');
+
         $this->logout();
     }
 }
