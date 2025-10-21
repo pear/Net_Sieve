@@ -971,7 +971,7 @@ class Net_Sieve
             $euser = $user;
         }
 
-        $auth = base64_encode("n,a=$euser\001auth=$token\001\001");
+        $auth = base64_encode("n,a=$euser,\001auth=$token\001\001");
         return $this->_sendCmd("AUTHENTICATE \"OAUTHBEARER\" \"$auth\"");
     }
 
