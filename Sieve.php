@@ -1517,6 +1517,8 @@ class Net_Sieve
      */
     function _escape($string)
     {
+        $string = (string) $string;
+
         // Some implementations don't allow UTF-8 characters in quoted-string,
         // use literal-c2s.
         if (preg_match('/[^\x01-\x09\x0B-\x0C\x0E-\x7F]/', $string)) {
