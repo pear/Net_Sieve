@@ -115,7 +115,7 @@ class Net_Sieve
     /**
      * The socket handle.
      *
-     * @var resource
+     * @var Net_Socket
      */
     var $_sock;
 
@@ -145,16 +145,16 @@ class Net_Sieve
     /**
      * PEAR object to avoid strict warnings.
      *
-     * @var PEAR_Error
+     * @var PEAR
      */
     var $_pear;
 
     /**
      * Constructor error.
      *
-     * @var PEAR_Error
+     * @var PEAR_Error|null
      */
-    var $_error;
+    var $_error = null;
 
     /**
      * Whether to enable debugging.
@@ -196,7 +196,7 @@ class Net_Sieve
     /**
      * Maximum number of referral loops
      *
-     * @var array
+     * @var int
      */
     var $_maxReferralCount = 15;
 
@@ -224,7 +224,7 @@ class Net_Sieve
      * @param string  $user       Login username.
      * @param string  $pass       Login password.
      * @param string  $host       Hostname of server.
-     * @param string  $port       Port of server.
+     * @param int     $port       Port of server.
      * @param string  $logintype  Type of login to perform (see
      *                            $supportedAuthMethods), use `OAUTH` and lib
      *                            will choose between OAUTHBEARER or XOAUTH2
@@ -232,7 +232,7 @@ class Net_Sieve
      * @param string  $euser      Effective user. If authenticating as an
      *                            administrator, login as this user.
      * @param bool    $debug      Whether to enable debugging (@see setDebug()).
-     * @param string  $bypassAuth Skip the authentication phase. Useful if the
+     * @param bool    $bypassAuth Skip the authentication phase. Useful if the
      *                            socket is already open.
      * @param bool    $useTLS     Use TLS if available.
      * @param array   $options    Additional options for
@@ -277,7 +277,10 @@ class Net_Sieve
         }
 
         if (is_string($user) && strlen($user) && strlen($pass)) {
-            $this->_error = $this->_handleConnectAndLogin();
+            $res = $this->_handleConnectAndLogin();
+            if ($res !== true) {
+                $this->_error = $res;
+            }
         }
     }
 
@@ -499,8 +502,10 @@ class Net_Sieve
     function getActive()
     {
         if (is_array($scripts = $this->_cmdListScripts())) {
-            return $scripts[1];
+            return isset($scripts[1]) ? $scripts[1] : null;
         }
+
+        return null;
     }
 
     /**
@@ -719,7 +724,8 @@ class Net_Sieve
             return $res;
         }
 
-        if ($this->_pear->isError($res = $this->_cmdCapability())) {
+        $res = $this->_cmdCapability();
+        if (is_a($res, 'PEAR_Error')) {
             return $this->_pear->raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
             );
@@ -896,7 +902,7 @@ class Net_Sieve
         }
 
         if ($this->_toUpper(substr($result, 0, 2)) == 'OK') {
-            return;
+            return null;
         }
 
         /* We don't use the protocol's third step because SIEVE doesn't allow
@@ -1042,9 +1048,9 @@ class Net_Sieve
     /**
      * Returns the list of scripts on the server.
      *
-     * @return array  An array with the list of scripts in the first element
-     *                and the active script in the second element on success,
-     *                PEAR_Error otherwise.
+     * @return array|PEAR_Error An array with the list of scripts in the first element
+     *                          and the active script in the second element on success,
+     *                          PEAR_Error otherwise.
      */
     function _cmdListScripts()
     {
@@ -1211,6 +1217,7 @@ class Net_Sieve
             );
         }
         $this->_debug("C: $cmd");
+        return null;
     }
 
     /**
@@ -1228,7 +1235,7 @@ class Net_Sieve
     /**
      * Receives a single line from the server.
      *
-     * @return string  The server response line.
+     * @return string|PEAR_Error The server response line or PEAR_Error.
      */
     function _recvLn()
     {
@@ -1377,8 +1384,8 @@ class Net_Sieve
      *
      * @param string $userMethod Only consider this method as available.
      *
-     * @return string The name of the best supported authentication method or
-     *                a PEAR_Error object on failure.
+     * @return string|PEAR_Error The name of the best supported authentication method or
+     *                           a PEAR_Error object on failure.
      */
     function _getBestAuthMethod($userMethod = null)
     {
