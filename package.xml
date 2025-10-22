@@ -37,9 +37,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>amistry@am-productions.biz</email>
   <active>no</active>
  </lead>
- <date>2024-04-08</date>
+ <date>2025-10-22</date>
  <version>
-  <release>1.4.7</release>
+  <release>1.4.8</release>
   <api>1.4.3</api>
  </version>
  <stability>
@@ -48,9 +48,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
  <notes>
-* Add support of OAUTHBEARER
-* PHPDoc improvements/fixes
-* Short array syntax
+* Fixed OAUTHBEARER support
+* Fixed various PHP deprecation warnings
+* PHPDoc fixes
  </notes>
  <contents>
   <dir name="/" baseinstalldir="Net">
@@ -564,6 +564,23 @@ it affects you or disable DIGEST-MD5
    <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
    <notes>
 * Fix PHP 8.1 deprecation warnings
+   </notes>
+  </release>
+  <release>
+   <date>2024-04-08</date>
+   <version>
+    <release>1.4.7</release>
+    <api>1.4.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="https://www.opensource.org/licenses/bsd-license.php">BSD</license>
+   <notes>
+* Add support of OAUTHBEARER
+* PHPDoc improvements/fixes
+* Short array syntax
    </notes>
   </release>
  </changelog>
