@@ -297,8 +297,8 @@ class Net_Sieve
     /**
      * Sets the debug state and handler function.
      *
-     * @param bool   $debug   Whether to enable debugging.
-     * @param string $handler A custom debug handler. Must be a valid callback.
+     * @param bool     $debug   Whether to enable debugging.
+     * @param callable $handler A custom debug handler. Must be a valid callback.
      *
      * @return void
      */
