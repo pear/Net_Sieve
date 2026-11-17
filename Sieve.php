@@ -268,6 +268,7 @@ class Net_Sieve
         /* Try to include the Auth_SASL package.  If the package is not
          * available, we disable the authentication methods that depend upon
          * it. */
+        // @phpstan-ignore-next-line
         if ((@include_once 'Auth/SASL.php') === false) {
             $this->_debug('Auth_SASL not present');
             $this->supportedAuthMethods = array_diff(
@@ -359,11 +360,11 @@ class Net_Sieve
     /**
      * Handles connecting to the server and checks the response validity.
      *
-     * @param string  $host    Hostname of server.
-     * @param string  $port    Port of server.
-     * @param array   $options List of options to pass to
-     *                         stream_context_create().
-     * @param bool    $useTLS  Use TLS if available.
+     * @param string $host    Hostname of server.
+     * @param int    $port    Port of server.
+     * @param array  $options List of options to pass to
+     *                        stream_context_create().
+     * @param bool   $useTLS  Use TLS if available.
      *
      * @return bool|PEAR_Error True on success, PEAR_Error otherwise.
      */
@@ -1474,9 +1475,7 @@ class Net_Sieve
         if (empty($this->_capability['implementation'])) {
             $res = $this->_cmdCapability();
             if (is_a($res, 'PEAR_Error')) {
-                return $this->_pear->raiseError(
-                    'Failed to connect, server said: ' . $res->getMessage(), 2
-                );
+                return $this->_pear->raiseError('Failed to connect, server said: ' . $res->getMessage(), 2);
             }
         }
 
@@ -1508,7 +1507,7 @@ class Net_Sieve
      */
     function _toUpper($string)
     {
-        $language = setlocale(LC_CTYPE, 0);
+        $language = setlocale(LC_CTYPE, '');
         setlocale(LC_CTYPE, 'C');
         $string = strtoupper((string) $string);
         setlocale(LC_CTYPE, $language);

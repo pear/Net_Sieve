@@ -190,7 +190,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
     public function testInstallScriptLarge()
     {
         $this->markTestSkipped();
-
+        /*
         $this->clear();
         $this->login();
 
@@ -203,6 +203,7 @@ class SieveTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($scriptname, reset($diff_scripts), 'Added script has a different name');
 
         $this->logout();
+        */
     }
 
     /**
