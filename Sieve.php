@@ -415,9 +415,15 @@ class Net_Sieve
         }
 
         // Check if we can enable TLS via STARTTLS.
-        if ($useTLS && !empty($this->_capability['starttls'])
-            && function_exists('stream_socket_enable_crypto')
-        ) {
+        if ($useTLS) {
+            if (empty($this->_capability['starttls'])) {
+                return $this->_pear->raiseError('Server does not support STARTTLS', 1);
+            }
+
+            if (!function_exists('stream_socket_enable_crypto')) {
+                return $this->_pear->raiseError('stream_socket_enable_crypto() function not found', 1);
+            }
+
             $res = $this->_startTLS();
             if (is_a($res, 'PEAR_Error')) {
                 return $res;
