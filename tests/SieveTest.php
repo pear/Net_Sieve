@@ -51,6 +51,13 @@ require_once dirname(__FILE__) . '/../Sieve.php';
  */
 class SieveTest extends PHPUnit\Framework\TestCase
 {
+    protected $cfg = [
+        'HOST' => '',
+        'PORT' => 4190,
+        'USERNAME' => '',
+        'PASSWORD' => '',
+    ];
+
     // contains the object handle of the string class
     protected $fixture;
     protected $pear;
@@ -64,9 +71,9 @@ class SieveTest extends PHPUnit\Framework\TestCase
 
         require_once dirname(__FILE__) . '/config.php';
 
-        foreach (['HOST', 'PORT', 'USERNAME', 'PASSWORD'] as $opt) {
-            if (!defined($opt)) {
-                define($opt, '');
+        foreach (array_keys($this->cfg) as $opt) {
+            if (defined($opt)) {
+                $this->cfg[$opt] = constant($opt);
             }
         }
 
@@ -89,9 +96,9 @@ class SieveTest extends PHPUnit\Framework\TestCase
 
     protected function login()
     {
-        $result = $this->fixture->connect(HOST, PORT);
+        $result = $this->fixture->connect($this->cfg['HOST'], $this->cfg['PORT']);
         $this->assertTrue($this->check($result), 'Can not connect');
-        $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
+        $result = $this->fixture->login($this->cfg['USERNAME'], $this->cfg['PASSWORD'], null, '', false);
         $this->assertTrue($this->check($result), 'Can not login');
     }
 
@@ -125,23 +132,23 @@ class SieveTest extends PHPUnit\Framework\TestCase
 
     public function testConnect()
     {
-        $result = $this->fixture->connect(HOST, PORT);
+        $result = $this->fixture->connect($this->cfg['HOST'], $this->cfg['PORT']);
         $this->assertTrue($this->check($result), 'Cannot connect');
     }
     
     public function testLogin()
     {
-        $result = $this->fixture->connect(HOST, PORT);
+        $result = $this->fixture->connect($this->cfg['HOST'], $this->cfg['PORT']);
         $this->assertTrue($this->check($result), 'Cannot connect');
-        $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
+        $result = $this->fixture->login($this->cfg['USERNAME'], $this->cfg['PASSWORD'], null, '', false);
         $this->assertTrue($this->check($result), 'Cannot login');
     }
 
     public function testDisconnect()
     {
-        $result = $this->fixture->connect(HOST, PORT);
+        $result = $this->fixture->connect($this->cfg['HOST'], $this->cfg['PORT']);
         $this->assertFalse($this->pear->isError($result), 'Cannot connect');
-        $result = $this->fixture->login(USERNAME, PASSWORD, null, '', false);
+        $result = $this->fixture->login($this->cfg['USERNAME'], $this->cfg['PASSWORD'], null, '', false);
         $this->assertFalse($this->pear->isError($result), 'Cannot login');
         $result = $this->fixture->disconnect();
         $this->assertFalse($this->pear->isError($result), 'Error on disconnect');
