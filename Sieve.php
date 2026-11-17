@@ -292,7 +292,7 @@ class Net_Sieve
      */
     function getError()
     {
-        return is_a($this->_error, 'PEAR_Error') ? $this->_error : false;
+        return $this->_error instanceof PEAR_Error ? $this->_error : false;
     }
 
     /**
@@ -343,13 +343,13 @@ class Net_Sieve
     function _handleConnectAndLogin()
     {
         $res = $this->connect($this->_data['host'], $this->_data['port'], $this->_options, $this->_useTLS);
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
         if ($this->_bypassAuth === false) {
             $res = $this->login($this->_data['user'], $this->_data['pass'], $this->_data['logintype'], $this->_data['euser'], $this->_bypassAuth);
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $res;
             }
         }
@@ -383,7 +383,7 @@ class Net_Sieve
         }
 
         $res = $this->_sock->connect($host, $port, false, 5, $options);
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -396,7 +396,7 @@ class Net_Sieve
             $this->_state = NET_SIEVE_STATE_AUTHORISATION;
 
             $res = $this->_doCmd();
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $res;
             }
 
@@ -407,7 +407,7 @@ class Net_Sieve
         // Explicitly ask for the capabilities if needed
         if (empty($this->_capability['implementation'])) {
             $res = $this->_cmdCapability();
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $this->_pear->raiseError(
                     'Failed to connect, server said: ' . $res->getMessage(), 2
                 );
@@ -425,7 +425,7 @@ class Net_Sieve
             }
 
             $res = $this->_startTLS();
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $res;
             }
         }
@@ -471,7 +471,7 @@ class Net_Sieve
 
         if (!$bypassAuth) {
             $res = $this->_cmdAuthenticate($user, $pass, $logintype, $euser);
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $res;
             }
         }
@@ -551,7 +551,7 @@ class Net_Sieve
     function installScript($scriptname, $script, $makeactive = false)
     {
         $res = $this->_cmdPutScript($scriptname, $script);
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -591,7 +591,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd(sprintf('HAVESPACE %s %d', $this->_escape($scriptname), $size));
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -691,7 +691,7 @@ class Net_Sieve
     function _cmdAuthenticate($uid, $pwd, $userMethod = null, $euser = '')
     {
         $method = $this->_getBestAuthMethod($userMethod);
-        if (is_a($method, 'PEAR_Error')) {
+        if ($method instanceof PEAR_Error) {
             return $method;
         }
 
@@ -727,12 +727,12 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd();
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
         $res = $this->_cmdCapability();
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $this->_pear->raiseError(
                 'Failed to connect, server said: ' . $res->getMessage(), 2
             );
@@ -832,12 +832,12 @@ class Net_Sieve
     function _authLOGIN($user, $pass, $euser)
     {
         $result = $this->_sendCmd('AUTHENTICATE "LOGIN"');
-        if (is_a($result, 'PEAR_Error')) {
+        if ($result instanceof PEAR_Error) {
             return $result;
         }
 
         $result = $this->_doCmd('"' . base64_encode($user) . '"', true);
-        if (is_a($result, 'PEAR_Error')) {
+        if ($result instanceof PEAR_Error) {
             return $result;
         }
 
@@ -856,7 +856,7 @@ class Net_Sieve
     function _authCRAMMD5($user, $pass, $euser)
     {
         $challenge = $this->_doCmd('AUTHENTICATE "CRAM-MD5"', true);
-        if (is_a($challenge, 'PEAR_Error')) {
+        if ($challenge instanceof PEAR_Error) {
             return $challenge;
         }
 
@@ -865,7 +865,7 @@ class Net_Sieve
         $challenge = base64_decode(trim($challenge));
         $response  = $cram->getResponse($user, $pass, $challenge);
 
-        if (is_a($response, 'PEAR_Error')) {
+        if ($response instanceof PEAR_Error) {
             return $response;
         }
 
@@ -884,7 +884,7 @@ class Net_Sieve
     function _authDigestMD5($user, $pass, $euser)
     {
         $challenge = $this->_doCmd('AUTHENTICATE "DIGEST-MD5"', true);
-        if (is_a($challenge, 'PEAR_Error')) {
+        if ($challenge instanceof PEAR_Error) {
             return $challenge;
         }
 
@@ -894,17 +894,17 @@ class Net_Sieve
 
         // @todo Really 'localhost'?
         $response = $digest->getResponse($user, $pass, $challenge, 'localhost', 'sieve', $euser);
-        if (is_a($response, 'PEAR_Error')) {
+        if ($response instanceof PEAR_Error) {
             return $response;
         }
 
         $result = $this->_sendStringResponse(base64_encode($response));
-        if (is_a($result, 'PEAR_Error')) {
+        if ($result instanceof PEAR_Error) {
             return $result;
         }
 
         $result = $this->_doCmd('', true);
-        if (is_a($result, 'PEAR_Error')) {
+        if ($result instanceof PEAR_Error) {
             return $result;
         }
 
@@ -915,7 +915,7 @@ class Net_Sieve
         /* We don't use the protocol's third step because SIEVE doesn't allow
          * subsequent authentication, so we just silently ignore it. */
         $result = $this->_sendStringResponse('');
-        if (is_a($result, 'PEAR_Error')) {
+        if ($result instanceof PEAR_Error) {
             return $result;
         }
 
@@ -1002,7 +1002,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd(sprintf('DELETESCRIPT %s', $this->_escape($scriptname)));
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1023,7 +1023,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd(sprintf('GETSCRIPT %s', $this->_escape($scriptname)));
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1045,7 +1045,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd(sprintf('SETACTIVE %s', $this->_escape($scriptname)));
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1066,7 +1066,7 @@ class Net_Sieve
         }
 
         $res = $this->_doCmd('LISTSCRIPTS');
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1109,7 +1109,7 @@ class Net_Sieve
         );
 
         $res = $this->_doCmd($command);
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1132,7 +1132,7 @@ class Net_Sieve
 
         if ($sendLogoutCMD) {
             $res = $this->_doCmd('LOGOUT');
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $res;
             }
         }
@@ -1153,11 +1153,14 @@ class Net_Sieve
         if (NET_SIEVE_STATE_DISCONNECTED == $this->_state) {
             return $this->_pear->raiseError('Not currently connected', 1);
         }
+
         $res = $this->_doCmd('CAPABILITY');
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
+
         $this->_parseCapability($res);
+
         return true;
     }
 
@@ -1214,15 +1217,17 @@ class Net_Sieve
     function _sendCmd($cmd)
     {
         $status = $this->_sock->getStatus();
-        if (is_a($status, 'PEAR_Error') || $status['eof']) {
+        if ($status instanceof PEAR_Error || $status['eof']) {
             return $this->_pear->raiseError('Failed to write to socket: connection lost');
         }
+
         $error = $this->_sock->write($cmd . "\r\n");
-        if (is_a($error, 'PEAR_Error')) {
+        if ($error instanceof PEAR_Error) {
             return $this->_pear->raiseError(
                 'Failed to write to socket: ' . $error->getMessage()
             );
         }
+
         $this->_debug("C: $cmd");
         return null;
     }
@@ -1247,7 +1252,7 @@ class Net_Sieve
     function _recvLn()
     {
         $lastline = $this->_sock->gets(8192);
-        if (is_a($lastline, 'PEAR_Error')) {
+        if ($lastline instanceof PEAR_Error) {
             return $this->_pear->raiseError(
                 'Failed to read from socket: ' . $lastline->getMessage()
             );
@@ -1297,7 +1302,7 @@ class Net_Sieve
         while ($referralCount < $this->_maxReferralCount) {
             if (strlen($cmd)) {
                 $error = $this->_sendCmd($cmd);
-                if (is_a($error, 'PEAR_Error')) {
+                if ($error instanceof PEAR_Error) {
                     return $error;
                 }
             }
@@ -1305,7 +1310,7 @@ class Net_Sieve
             $response = '';
             while (true) {
                 $line = $this->_recvLn();
-                if (is_a($line, 'PEAR_Error')) {
+                if ($line instanceof PEAR_Error) {
                     return $line;
                 }
 
@@ -1328,7 +1333,7 @@ class Net_Sieve
 
                 if (preg_match('/^BYE/i', $line)) {
                     $error = $this->disconnect(false);
-                    if (is_a($error, 'PEAR_Error')) {
+                    if ($error instanceof PEAR_Error) {
                         return $this->_pear->raiseError(
                             'Cannot handle BYE, the error was: '
                             . $error->getMessage(),
@@ -1345,7 +1350,7 @@ class Net_Sieve
                             $this->_data['host']
                         );
                         $error = $this->_handleConnectAndLogin();
-                        if (is_a($error, 'PEAR_Error')) {
+                        if ($error instanceof PEAR_Error) {
                             return $this->_pear->raiseError(
                                 'Cannot follow referral to '
                                 . $this->_data['host'] . ', the error was: '
@@ -1442,7 +1447,7 @@ class Net_Sieve
     function _startTLS()
     {
         $res = $this->_doCmd('STARTTLS');
-        if (is_a($res, 'PEAR_Error')) {
+        if ($res instanceof PEAR_Error) {
             return $res;
         }
 
@@ -1480,7 +1485,7 @@ class Net_Sieve
         // Query the server capabilities again now that we are under encryption.
         if (empty($this->_capability['implementation'])) {
             $res = $this->_cmdCapability();
-            if (is_a($res, 'PEAR_Error')) {
+            if ($res instanceof PEAR_Error) {
                 return $this->_pear->raiseError('Failed to connect, server said: ' . $res->getMessage(), 2);
             }
         }
