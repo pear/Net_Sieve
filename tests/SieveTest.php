@@ -2,8 +2,6 @@
 /**
  * This file contains the PHPUnit test case for Net_Sieve.
  *
- * PHP version 5
- *
  * +-----------------------------------------------------------------------+
  * | All rights reserved.                                                  |
  * |                                                                       |
@@ -35,7 +33,6 @@
  * @author    Anish Mistry <amistry@am-productions.biz>
  * @copyright 2006 Anish Mistry
  * @license   http://www.opensource.org/licenses/bsd-license.php BSD
- * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Net_Sieve
  */
 
@@ -64,7 +61,14 @@ class SieveTest extends PHPUnit\Framework\TestCase
         if (!file_exists(dirname(__FILE__) . '/config.php')) {
             $this->markTestSkipped('Test configuration incomplete. Copy config.php.dist to config.php.');
         }
+
         require_once dirname(__FILE__) . '/config.php';
+
+        foreach (['HOST', 'PORT', 'USERNAME', 'PASSWORD'] as $opt) {
+            if (!defined($opt)) {
+                define($opt, '');
+            }
+        }
 
         // Create a new instance of Net_Sieve.
         $this->pear = new PEAR();
